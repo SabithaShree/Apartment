@@ -1,0 +1,32 @@
+<%- include("partials/header") -%>
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/contacts.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+<div id="profile" class="profile full-height">
+  <!-- <i id="toggler-menu" class="toggler-icon fas fa-bars"></i> -->
+  <div class="row full-height">
+    <div class="col-3 left-pane">
+      <div class="position-fixed">
+        <ul class="menu-options">
+          <li class="apt-title"><img class="leftpane-logo" src="images/stepsstone-logo.png" alt="Logo">Ananthaya</li>
+          <li class="menu-option" redirect=""><i class="fas fa-rupee-sign"></i>Maintance</li>
+          <li class="menu-option" redirect=""><i class="fas fa-money-check"></i>Common Expenses</li>
+          <li class="menu-option" redirect="/contacts"><i class="fas fa-address-book"></i>Contacts</li>
+          <li class="menu-option" redirect=""><i class="fab fa-wpforms"></i>Forum</li>
+          <li class="menu-option" redirect="/settings"><i class="fas fa-user"></i>Settings</li>
+          <li class="menu-option logout" redirect="/" id="logout">Sign Out</li>
+        </ul>
+      </div>
+    </div>
+    <div id="rightpane" class="col-9 container-fluid profile-body">
+      <%- include("profile") -%>
+    </div>
+</div>
+
+</div>
+<script type="text/javascript" src="js/home.js"></script>
+
+<%- include("partials/footer") -%>

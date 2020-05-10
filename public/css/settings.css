@@ -1,0 +1,46 @@
+.settings-container {
+    background-image: linear-gradient(0, #f0f0f0, #E9E9E9, transparent);
+    padding: 2% 0;
+}
+
+.settings-form {
+  margin : 9% 17%;
+}
+
+.settings-form .form-group {
+  margin: 5% 4%;
+}
+
+.settings-header {
+  text-align: center;
+}
+
+.settings-menu {
+  padding: 2% 4%;
+  border-bottom: 2px solid #ffc299;
+  color: #9ea6ae;
+  margin: 0 2%;
+}
+
+.settings-menu:hover {
+  cursor: pointer;
+}
+
+.settings-menu.active {
+  color: #495057;
+  cursor: pointer;
+  border-bottom: 4px solid #ff6600;
+}
+
+.settings-form .btn-primary {
+  margin-right: 20px;
+}
+
+.settings-form .btn-cancel:hover {
+  background-color: transparent;
+  color: #007bff;
+}
+
+.updatepassword-form .form-group {
+  margin: 10% auto;
+}

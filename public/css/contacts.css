@@ -1,0 +1,26 @@
+.contact-pic {
+  object-fit: cover;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 10px solid white;
+  margin-bottom: 1rem;
+}
+
+.contact-category {
+  padding-bottom: 1rem;
+  border-bottom: 2px dashed orange;
+  display: inline;
+}
+
+.contact {
+  margin: 5% 0;
+}
+
+.contact-col {
+  padding: 3% 0;
+}
+
+.contact-col p {
+  color: #ff6600;
+}

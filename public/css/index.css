@@ -1,0 +1,59 @@
+
+.container-fluid {
+  padding: 4% 8%;
+}
+
+.container-fluid.main-container {
+  padding: 0;
+}
+
+/* header section */
+
+.cover-img {
+  max-width: 100%;
+}
+
+.navbar-logo {
+  width : 40px;
+}
+
+.header-navbar {
+  background-color: #001133;
+}
+
+.header-navbar .nav-item {
+  margin: 0 1.5rem;
+}
+
+.header-navbar .nav-link, .header-navbar .navbar-brand {
+  color: white;
+}
+
+
+/* about section */
+
+.about-section, .contact-section {
+  background-color: #ffeecc;
+}
+
+/* facility section */
+
+.facility-img {
+  border-radius: 50%;
+  width: 45%;
+}
+
+.amenity-name {
+  padding: 2% 4%;
+}
+
+.amenity-text{
+  margin-top: 1.5%;
+}
+
+/* footer */
+
+.footer-section {
+    background-color: #ffdd99;
+    color: white;
+  }

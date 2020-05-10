@@ -1,0 +1,113 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+hr {
+  border-top : 2px dashed  #acb3b9;
+  width: 80%;
+  margin: 0 8%;
+  background-color: grey;
+}
+
+.hide {
+  display: none;
+}
+
+.container-fluid {
+  padding: 2% 8%;
+}
+
+.profile, .left-pane {
+  padding: 0;
+}
+
+/* .toggler-icon {
+  right: 15px;
+  top: 15px;
+  position: absolute;
+  font-size: 40px;
+} */
+
+/* .toggler-icon:hover {
+  cursor: pointer;
+} */
+
+.profile-pic {
+  object-fit: cover;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 10px solid white;
+}
+
+.profile-body {
+  background-color: #cccccc;
+  background-image: linear-gradient(0, #f0f0f0, #E9E9E9, transparent);
+  min-height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.profile-desc {
+  padding : 14% 5% 0 8%;
+}
+
+.profile-detail {
+  padding: 2% 0;
+}
+
+.profile-label {
+  font-weight: 500;
+}
+
+.profile-value {
+  color: #ff6600;
+  font-weight: 500;
+}
+
+
+/* left pane */
+
+.freeze {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.left-pane {
+  padding: 0 1.5%;
+}
+
+.leftpane-logo {
+  width: 25%;
+}
+
+.menu-options {
+  list-style: none;
+}
+
+.menu-options li {
+  padding: 6% 10%;
+}
+
+.menu-options li i {
+  margin-right: 5%;
+}
+
+.menu-options li:hover {
+  cursor: pointer;
+}
+
+.menu-option:hover {
+  background-color: #ffe0cc;
+  border-radius: 10%;
+}
+
+.apt-title {
+  color: #ff6600;
+}

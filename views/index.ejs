@@ -1,0 +1,163 @@
+<%- include("partials/header") -%>
+
+<div class="container-fluid main-container">
+  <section id="header">
+    <div class="header-section">
+      <nav class="navbar navbar-expand-sm header-navbar">
+        <a class="navbar-brand" href="#">
+          <img class="navbar-logo" src="images/stepsstone-logo.png" alt="Logo">
+          Ananthaya
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#aptnavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="aptnavbar">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Amenities</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#loginModal">Login</button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <img class="cover-img" src="images/ananthaya-cover.jpg" alt="apartment">
+    </div>
+
+  </section>
+
+  <section id="about">
+    <div class="about-section container-fluid">
+      <h1>StepsStone Ananthaya</h1>
+      <p>StepsStone Ananthaya is a residential gated community
+        built by StepsStone Constructions located in Urapakkam.
+        It is 4 storey apartment consisting of 2 towers with a total of 128 flats.
+        <br /> Address : Revathipuram 4th street, (Near Saraswathi School), Urapakkam, Chengalpattu District.
+      </p>
+    </div>
+  </section>
+
+  <section id="amenities">
+    <div class="amenities-section container-fluid">
+      <h2>Amenities</h2>
+      <div class="row amenity-name">
+        <div class="col-md-4 center">
+          <img class="facility-img" src="images/cctv-facility.jpg" alt="cctv">
+        </div>
+        <div class="amenity-text col-md-8">
+          <h4>Security</h4>
+          <p>Apartment is fully monitored under Surveillance cameras.
+            It is also supervised by 2 security guards.</p>
+        </div>
+      </div>
+      <div class="row amenity-name">
+        <div class="col-md-4 center">
+          <img class="facility-img" src="images/park-facility.jpg" alt="park">
+        </div>
+        <div class="amenity-text col-md-8">
+          <h4>Park</h4>
+          <p>Apartment has an outdoor play area for kids and it is also
+            surrounded by a beatuiful garden.</p>
+        </div>
+      </div>
+      <div class="row amenity-name">
+        <div class="col-md-4 center">
+          <img class="facility-img" src="images/indoorplay-facility.jpg" alt="play">
+        </div>
+        <div class="amenity-text col-md-8">
+          <h4>Indoor games</h4>
+          <p>An Indoor play area is available with lot of indoor games for both
+            adults and children to play. </p>
+        </div>
+      </div>
+      <div class="row amenity-name">
+        <div class="col-md-4 center">
+          <img class="facility-img" src="images/generator-facility.jpg" alt="power backup">
+        </div>
+        <div class="amenity-text col-md-8">
+          <h4>Power Backup</h4>
+          <p>Apartment is provided with 24*7 power backup. It has 2 generators,
+            one for each block. </p>
+        </div>
+      </div>
+      <div class="row amenity-name">
+        <div class="col-md-4 center">
+          <img class="facility-img" src="images/gym-facility.jpg" alt="gym">
+        </div>
+        <div class="amenity-text col-md-8">
+          <h4>Gymnasium</h4>
+          <p>Apartment has Gym with good gym equipments. There is separate gym room
+            for men and women.</p>
+        </div>
+      </div>
+      <div class="row amenity-name">
+        <div class="col-md-4 center">
+          <img class="facility-img" src="images/terracekitchen-facility.jpg" alt="gym">
+        </div>
+        <div class="amenity-text col-md-8">
+          <h4>Party Hall & Kitchen</h4>
+          <p>Aparment has a party hall and there is a
+            kitchen at the terrace which can be made use during parties.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="contact-section container-fluid">
+      <h2>Contact</h2>
+      <p>Contact us for flats for rent and resale flats.</p>
+      <p>9003173960</p>
+      <p>sabithashree.s@gmail.com</p>
+    </div>
+  </section>
+
+  <section id="footer">
+    <div class="footer-section center">
+      Copyright SabithaShree @ 2020
+    </div>
+  </section>
+
+  <div class="modal fade" id="loginModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="loginform" action="/login" method="post">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Login</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="text" class="form-control" name="username" placeholder="User Name">
+            </div>
+            <div class="form-group"><br>
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-secondary center" form="loginform">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<%- include("partials/footer") -%>
