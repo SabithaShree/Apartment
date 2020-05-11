@@ -23,7 +23,6 @@ exports.Flat = function()
     "family" : "Number",
     "vehicles" : {"car" : "String", "bike" : "String"}
   });
-
   return mongoose.model("Flat", flatSchema);
 }
 
@@ -38,4 +37,21 @@ exports.Contact = function()
       }]
   });
   return mongoose.model("Contact", contactSchema);
+}
+
+exports.Forum = function()
+{
+  const Schema = mongoose.Schema;
+  const forumSchema = new Schema({
+    "title": "String",
+    "content": "String",
+    "author": "String",
+    "date": "Date",
+    "comments": [{
+      "author": "String",
+      "content": "String",
+      "date": "Date"
+    }]
+  });
+  return mongoose.model("Forum", forumSchema);
 }

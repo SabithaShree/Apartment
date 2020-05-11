@@ -1,0 +1,18 @@
+.forum-container.container-fluid {
+  padding: 2% 0;
+}
+
+.post {
+  background-color: #fffff0;
+  margin: 4%;
+  box-shadow: 3px 3px 20px #ffe0cc
+}
+
+.post .title {
+  background-color: #ffe0cc;
+  padding: 1% 2%;
+}
+
+.post .content {
+  padding: 2%;
+}

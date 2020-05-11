@@ -10,13 +10,19 @@
 //   $("#slider-menu").hide("slide", {"direction" : "right"}, 500);
 // });
 
+
 $(".menu-option:not('.logout')").on("click", function() {
+  $(this).siblings().removeClass("active");
+  $(this).addClass("active");
+
   let requrl = $(this).attr("redirect");
   $.ajax({
     url : requrl,
     method : "GET",
+    beforeSend : showLoading(),
     success : function(res, status, xhr) {
       $("#rightpane").html(res);
+      $("#rightpane").append(loadingHtml());
     }
   });
 });

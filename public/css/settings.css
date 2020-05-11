@@ -1,5 +1,4 @@
 .settings-container {
-    background-image: linear-gradient(0, #f0f0f0, #E9E9E9, transparent);
     padding: 2% 0;
 }
 
@@ -18,7 +17,7 @@
 .settings-menu {
   padding: 2% 4%;
   border-bottom: 2px solid #ffc299;
-  color: #9ea6ae;
+  color: #68737d;
   margin: 0 2%;
 }
 
@@ -36,9 +35,9 @@
   margin-right: 20px;
 }
 
-.settings-form .btn-cancel:hover {
-  background-color: transparent;
+.settings-container .btn-cancel:hover {
   color: #007bff;
+  background-color: #d9d9d9;
 }
 
 .updatepassword-form .form-group {

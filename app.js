@@ -16,7 +16,6 @@ const User = model.User();
 const Flat = model.Flat();
 const Contact = model.Contact();
 
-
 app.get("/", function(req,res) {
   res.render("index");
 });
@@ -48,10 +47,8 @@ app.get("/profile", util.redirectLogin, function(req, res) {
   });
 });
 
-app.get("/settings", util.redirectLogin,  function(req,res) {
-  db.findRow(Flat, {"flat_id" : req.session.user_id}, function(flat) {
-    res.render("settings", flat);
-  });
+app.get("/forum", util.redirectLogin, function(req, res) {
+  res.render("forum");
 });
 
 app.get("/contacts",  util.redirectLogin,  function(req,res) {
@@ -60,6 +57,13 @@ app.get("/contacts",  util.redirectLogin,  function(req,res) {
     res.render("contacts", {"contacts": contacts});
   });
 });
+
+app.get("/settings", util.redirectLogin,  function(req,res) {
+  db.findRow(Flat, {"flat_id" : req.session.user_id}, function(flat) {
+    res.render("settings", flat);
+  });
+});
+
 
 app.post("/updateProfile", util.redirectLogin, function(req, res) {
   db.updateRow(Flat, {"flat_id": req.session.user_id}, req.body , function(updateResult) {

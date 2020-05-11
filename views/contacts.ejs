@@ -1,4 +1,4 @@
-<div class="contacts-container">
+<div class="contacts-container container-fluid">
   <div class="row contact center">
     <% contacts.forEach(function(category) { %>
       <% if(category.title == "President" || category.title == "Treasurer" || category.title == "Secretary") { %>
@@ -13,19 +13,18 @@
     <% }); %>
   </div>
 
-  <% contacts.forEach(function(category) {%>
+  <% contacts.forEach(function(category) { %>
     <% if(category.title != "President" && category.title != "Treasurer" && category.title != "Secretary") { %>
     <h3><%= category.title %></h3>
-    <% category.members.forEach(function(member) { %>
-      <div class="row contact">
-        <div class="col-3">
+    <div class="row contact">
+      <% category.members.forEach(function(member) { %>
+        <div class="col-4 contact-col">
           <img class="contact-pic" src="images/profile.jpg" alt="contact-pic">
-        </div>
-        <div class="col-6 contact-col">
           <h5><%= member.name %></h5>
           <p><%= member.contact %></p>
         </div>
-      </div>
-    <% }); %>
-  <% }}); %>
+      <% }); %>
+    </div>
+    <% } %>
+  <% }); %>
 </div>
