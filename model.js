@@ -21,7 +21,8 @@ exports.Flat = function()
     "phone" : "Number",
     "email" : "String",
     "family" : "Number",
-    "vehicles" : {"car" : "String", "bike" : "String"}
+    "vehicles" : {"car" : "String", "bike" : "String"},
+    "post": [{"postid":"Number"}]
   });
   return mongoose.model("Flat", flatSchema);
 }
@@ -45,10 +46,11 @@ exports.Forum = function()
   const forumSchema = new Schema({
     "title": "String",
     "content": "String",
-    "author": "String",
+    "author": "String", // flat_id
     "date": "Date",
+    "like": "Number",
     "comments": [{
-      "author": "String",
+      "author": "String", // flat_id
       "content": "String",
       "date": "Date"
     }]

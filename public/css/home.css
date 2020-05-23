@@ -51,7 +51,7 @@ hr {
 }
 
 .profile-desc {
-  padding : 14% 5% 0 8%;
+  padding : 10% 5% 0 8%;
 }
 
 .profile-detail {
@@ -63,7 +63,7 @@ hr {
 }
 
 .profile-value {
-  color: #ff6600;
+  color: #ff3333;
   font-weight: 500;
 }
 
@@ -110,7 +110,7 @@ hr {
 }
 
 .apt-title {
-  color: #ff6600;
+  color: #ff3333;
 }
 
 .loading-screen {

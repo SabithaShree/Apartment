@@ -1,35 +1,56 @@
-<div class="forum-container container-fluid">
-  <div class="posts">
-    <div class="post">
-      <div class="title">
-        <h5>Vegetables & Fruits</h5>
+<script>
+  $(document).ready(function()
+  {
+    var forum = new Forum($("#forum-container"));
+    forum.registerForumEvents();
+  });
+</script>
+<div id="forum-container" class="forum-container container-fluid">
+
+  <%
+   var monthNames = [
+        "January", "February", "March", "April", "May", "June", "July",
+        "August", "September", "October", "November", "December"];
+   %>
+
+  <div class="forum-header">
+    <div class="row">
+      <div class="col-2 center">
+        <img class="post-pro-pic forum-pic" src="images/profile.jpg" alt="profile-pic">
+        <p><%= author %></p>
       </div>
-      <div class="content">
-        <p>Vegetables van has been arranged to come to our premises weekly 2 days on
-          wednesday and friday. Please follow social distancing to ensure safety.
-          The vendor will be available from 10AM to 1PM.</p>
-      </div>
-    </div>
-    <div class="post">
-      <div class="title">
-        <h5>Vegetables & Fruits</h5>
-      </div>
-      <div class="content">
-        <p>Vegetables van has been arranged to come to our premises weekly 2 days on
-          wednesday and friday. Please follow social distancing to ensure safety.
-          The vendor will be available from 10AM to 1PM.</p>
-      </div>
-    </div>
-    <div class="post">
-      <div class="title">
-        <h5>Vegetables & Fruits</h5>
-      </div>
-      <div class="content">
-        <p>Vegetables van has been arranged to come to our premises weekly 2 days on
-          wednesday and friday. Please follow social distancing to ensure safety.
-          The vendor will be available from 10AM to 1PM.</p>
+      <div class="col-10">
+        <h1 class="forum-title"><%=title %></h1>
+        <p class="forum-date"><%= date %></p>
       </div>
     </div>
+  </div>
+
+  <div class="forum-body">
+    <p><%= content %></p>
+  </div>
+
+  <div class="forum-response">
+    <span class="like-button"><i class="fas fa-thumbs-up hide like-solid-icon"></i><i class="far fa-thumbs-up like-icon"></i>Like</span>
+    <span class="comment-button"><i class="far fa-comment-alt comment-icon"></i>Comment</span>
+  </div>
+
+  <div class="forum-comments">
+    <% comments.forEach(function(comment) {%>
+      <div class="row comment">
+        <div class="col-1">
+          <img class="comment-pro-pic" src="images/profile.jpg" alt="profile-pic">
+        </div>
+        <div class="comment-body col-10">
+          <p class="comment-user"><%= comment.author%></p>
+          <% let d = comment.date %>
+          <span class="forum-date">
+            <%= d.getDate() + " " + monthNames[d.getMonth()] + "," + d.getFullYear() %>
+          </span>
+          <p class="comment-content"><%= comment.content%></p>
+        </div>
+      </div>
+    <% }) %>
   </div>
 
 </div>

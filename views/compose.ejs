@@ -1,0 +1,22 @@
+<script>
+  $(document).ready(function() {
+    var editor = new FroalaEditor("#richtext-editor");
+    var compose = new Compose("#newforum-container");
+    compose.registerEvents();
+  })
+</script>
+
+<div id="newforum-container" class="newforum-container container-fluid">
+  <form action="/newforum" method="post">
+    <div class="form-group">
+      <input class="form-control" type="text" name="title" placeholder="Title of the post">
+    </div>
+    <div id="richtext-editor" class="richtext-editor">
+
+    </div>
+    <div class="form-group text-center">
+        <button class="btn btn-primary" type="submit">Post</button>
+        <button class="btn btn-outline-primary btn-cancel">Cancel</button>
+    </div>
+  </form>
+</div>

@@ -10,25 +10,43 @@
 //   $("#slider-menu").hide("slide", {"direction" : "right"}, 500);
 // });
 
+class Home
+{
+  constructor(homeEle) {
+    this.home = homeEle;
+  }
 
-$(".menu-option:not('.logout')").on("click", function() {
-  $(this).siblings().removeClass("active");
-  $(this).addClass("active");
+  registerEvents()
+  {
 
-  let requrl = $(this).attr("redirect");
-  $.ajax({
-    url : requrl,
-    method : "GET",
-    beforeSend : showLoading(),
-    success : function(res, status, xhr) {
-      $("#rightpane").html(res);
-      $("#rightpane").append(loadingHtml());
-    }
-  });
-});
+    $(this.home).ready(function() {
+      $(".menu-option").removeClass("active");
+      let pathname = window.location.pathname;
+      $("li[class=menu-option][name='" + pathname + "']").addClass("active");
+    });
 
-$("#logout").on("click", function() {
-  $.post("/logout" , function() {
-    window.location.href = "/";
-  });
-});
+    $(this.home).on("click", ".menu-option:not('.logout')", function() {
+      $(this).siblings().removeClass("active");
+      $(this).addClass("active");
+
+      let requrl = $(this).attr("name");
+      $.ajax({
+        url : requrl,
+        method : "GET",
+        beforeSend : showLoading(),
+        success : function(res, status, xhr) {
+          hideLoading();
+          window.history.pushState("Apartment", "StepsStone Ananthaya", requrl);
+          $("#rightpane").html(res);
+          $("#rightpane").append(loadingHtml());
+        }
+      });
+    });
+
+    $(this.home).on("click", "#logout",  function() {
+      $.post("/logout" , function() {
+        window.location.href = "/";
+      });
+    });
+  }
+}

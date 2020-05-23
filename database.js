@@ -1,5 +1,5 @@
 
-exports.insertRow = function(Collection, data, callback) {
+exports.insertRow = async function(Collection, data, callback) {
   const newrow = new Collection(data);
   newrow.save(function(err, addeddata) {
     if(err) {

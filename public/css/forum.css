@@ -1,18 +1,139 @@
-.forum-container.container-fluid {
+.forums-container.container-fluid {
   padding: 2% 0;
 }
 
 .post {
-  background-color: #fffff0;
+  background-color: white;
   margin: 4%;
-  box-shadow: 3px 3px 20px #ffe0cc
-}
-
-.post .title {
-  background-color: #ffe0cc;
-  padding: 1% 2%;
-}
-
-.post .content {
+  box-shadow: 3px 3px 20px #ffe0cc;
+  max-height: 9rem;
+  overflow: hidden;
   padding: 2%;
+}
+
+.post:hover {
+  cursor: pointer;
+}
+
+.image-sec {
+  padding: 1.5%;
+}
+
+.post-pro-pic {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-bottom: 1rem;
+}
+
+.post-sec h5 {
+  padding: 1% 0;
+  border-bottom: 2px solid #ffe0cc;
+}
+
+.comments-sec {
+  opacity: 70%;
+}
+
+.comments-sec .far {
+  font-size: 1.5rem;
+  padding: 10%;
+}
+
+
+/* second page */
+
+.forum-container {
+  max-width: fit-content;
+  background-color: white;
+  margin: 4%;
+  box-shadow: 3px 3px 20px #ffe0cc;
+  padding: 6%;
+}
+
+.forum-title {
+  margin-bottom: 0;
+  margin-top: 2%;
+}
+
+.forum-date {
+  opacity:70%;
+  font-size: 0.8rem;
+}
+
+.forum-pic {
+  margin-bottom: 0;
+}
+
+.forum-body {
+  margin-bottom: 6%;
+}
+
+.forum-response {
+  padding: 2% 0;
+  border-top: 1px dotted;
+  border-bottom: 1px dotted;
+}
+
+.like-button, .comment-button {
+  padding: 2% 3%;
+}
+
+.like-button:hover, .comment-button:hover {
+  cursor: pointer;
+  background-color: #f5f5f5;
+  outline: 1px solid #f0f0f0;
+}
+
+.like-icon, .comment-icon {
+  margin-right: 1.5%;
+}
+
+.like-solid-icon {
+  margin-right: 1.5%;
+  color: #ff3333;
+}
+
+.forum-comments {
+  margin-top: 6%;
+}
+
+.comment {
+  margin: 4% 0;
+}
+
+.comment-user {
+  font-weight: 500;
+  display: inline;
+  margin-right: 2%;
+}
+
+.comment-body {
+  border: 1px dotted;
+  box-shadow: -1px 1px 3px #c0c0c0;
+  border-radius: 5%;
+  margin-left: 1%;
+}
+
+.comment-content {
+  margin-bottom: 0;
+}
+
+.comment-pro-pic {
+  object-fit: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+/* compose page */
+
+.newforum-container {
+  padding: 10% 8%;
+}
+
+.richtext-editor {
+  margin: 5% 0;
 }

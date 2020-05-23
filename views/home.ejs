@@ -1,10 +1,9 @@
-<%- include("partials/header") -%>
-  <link rel="stylesheet" href="css/home.css">
-  <link rel="stylesheet" href="css/forum.css">
-  <link rel="stylesheet" href="css/contacts.css">
-  <link rel="stylesheet" href="css/settings.css">
-</head>
-<body>
+<%- include("partials/home-header") -%>
+
+<script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript" src="js/home.js"></script>
+<script type="text/javascript" src="js/settings.js"></script>
+<script type="text/javascript" src="js/forum.js"></script>
 
 <div id="profile" class="profile full-height">
   <!-- <i id="toggler-menu" class="toggler-icon fas fa-bars"></i> -->
@@ -13,26 +12,30 @@
       <div class="position-fixed">
         <ul class="menu-options">
           <li class="apt-title"><img class="leftpane-logo" src="images/stepsstone-logo.png" alt="Logo">Ananthaya</li>
-          <li class="menu-option active" redirect="/profile"><i class="fas fa-home"></i>Home</li>
-          <li class="menu-option" redirect=""><i class="fas fa-rupee-sign"></i>Maintance</li>
-          <li class="menu-option" redirect=""><i class="fas fa-money-check"></i>Common Expenses</li>
-          <li class="menu-option" redirect="/forum"><i class="fab fa-wpforms"></i>Forum</li>
-          <li class="menu-option" redirect="/contacts"><i class="fas fa-address-book"></i>Contacts</li>
-          <li class="menu-option" redirect="/settings"><i class="fas fa-user"></i>Settings</li>
-          <li class="menu-option logout" redirect="/" id="logout">Sign Out</li>
+          <li class="menu-option active" name="/home"><i class="fas fa-home"></i>Home</li>
+          <li class="menu-option" name="/maintanance"><i class="fas fa-rupee-sign"></i>Maintance</li>
+          <li class="menu-option" name="/home"><i class="fas fa-money-check"></i>Common Expenses</li>
+          <li class="menu-option" name="/forums"><i class="fab fa-wpforms"></i>Forums</li>
+          <li class="menu-option" name="/contacts"><i class="fas fa-address-book"></i>Contacts</li>
+          <li class="menu-option" name="/settings"><i class="fas fa-user"></i>Settings</li>
+          <li class="menu-option logout" name="" id="logout">Sign Out</li>
         </ul>
       </div>
     </div>
     <div id="rightpane" class="col-9 profile-body">
-      <%- include("profile") -%>
+      <%- include(template) -%>
       <div id="loading" class="loading-screen hide">
       </div>
     </div>
+  </div>
 </div>
 
-</div>
 
-<script type="text/javascript" src="js/util.js"></script>
-<script type="text/javascript" src="js/home.js"></script>
+<script>
+  $(document).ready(function() {
+    var home = new Home($("#profile"));
+    home.registerEvents();
+  });
+</script>
 
 <%- include("partials/footer") -%>

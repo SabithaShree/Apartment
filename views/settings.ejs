@@ -1,4 +1,11 @@
-<div class="settings-container container-fluid">
+<script>
+  $(document).ready(function() {
+    var settings = new Settings($("#settings-container"));
+    settings.registerEvents();
+  });
+</script>
+
+<div id="settings-container" class="settings-container container-fluid">
   <div class="settings-header">
     <span name="updateprofile" class="settings-menu active">Update Profile</span>
     <span name="updatepassword" class="settings-menu">Change Password</span>
@@ -57,7 +64,3 @@
     </div>
   </form>
 </div>
-
-<script type="text/javascript" src="js/settings.js"></script>
-
-<%- include("partials/footer") -%>
