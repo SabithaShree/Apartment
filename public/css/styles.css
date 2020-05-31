@@ -35,3 +35,15 @@ h1, h2 {
   color: #007bff;
   background-color: #d9d9d9;
 }
+
+.status-bar {
+  position: fixed;
+  left: 50%;
+  max-width: 500px;
+  padding: .5%;
+  background-color: #ff3333;
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+  z-index: 100;
+}

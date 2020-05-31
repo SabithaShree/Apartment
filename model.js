@@ -48,7 +48,7 @@ exports.Forum = function()
     "content": "String",
     "author": "String", // flat_id
     "date": "Date",
-    "like": "Number",
+    "likes": ["String"], // array of flat_id
     "comments": [{
       "author": "String", // flat_id
       "content": "String",

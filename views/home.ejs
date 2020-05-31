@@ -1,41 +1,34 @@
-<%- include("partials/home-header") -%>
-
-<script type="text/javascript" src="js/util.js"></script>
-<script type="text/javascript" src="js/home.js"></script>
-<script type="text/javascript" src="js/settings.js"></script>
-<script type="text/javascript" src="js/forum.js"></script>
-
-<div id="profile" class="profile full-height">
-  <!-- <i id="toggler-menu" class="toggler-icon fas fa-bars"></i> -->
-  <div class="row full-height">
-    <div class="col-3 left-pane">
-      <div class="position-fixed">
-        <ul class="menu-options">
-          <li class="apt-title"><img class="leftpane-logo" src="images/stepsstone-logo.png" alt="Logo">Ananthaya</li>
-          <li class="menu-option active" name="/home"><i class="fas fa-home"></i>Home</li>
-          <li class="menu-option" name="/maintanance"><i class="fas fa-rupee-sign"></i>Maintance</li>
-          <li class="menu-option" name="/home"><i class="fas fa-money-check"></i>Common Expenses</li>
-          <li class="menu-option" name="/forums"><i class="fab fa-wpforms"></i>Forums</li>
-          <li class="menu-option" name="/contacts"><i class="fas fa-address-book"></i>Contacts</li>
-          <li class="menu-option" name="/settings"><i class="fas fa-user"></i>Settings</li>
-          <li class="menu-option logout" name="" id="logout">Sign Out</li>
-        </ul>
-      </div>
+<div class="profile-container container-fluid">
+  <div id="maintanance" class="maintanance-container container-fluid">
+  </div>
+  <div class="row">
+    <div class="col-3">
+      <img class="profile-pic" src="/images/profile.jpg" alt="profile-pic">
     </div>
-    <div id="rightpane" class="col-9 profile-body">
-      <%- include(template) -%>
-      <div id="loading" class="loading-screen hide">
+    <div class="col-9">
+      <div class="profile-desc container-fluid">
+        <h4><%=name%></h4>
+        <p><%=flat_id%></p>
       </div>
     </div>
   </div>
+  <div class="profile-details">
+    <div class="row profile-detail">
+      <div class="col-sm-4 profile-label">Phone</div>
+      <div class="col-sm-8 profile-value"><%=phone%></div>
+    </div>
+    <div class="row profile-detail">
+      <div class="col-sm-4 profile-label">Email</div>
+      <div class="col-sm-8 profile-value"><%=email%></div>
+    </div>
+    <div class="row profile-detail">
+      <div class="col-sm-4 profile-label">Vehicles</div>
+      <div class="col-sm-8 profile-value">2 wheeler : <%=vehicles.bike %>, 4 wheeler : <%=vehicles.car%> </div>
+    </div>
+    <div class="row profile-detail">
+      <div class="col-sm-4 profile-label">No.of family members</div>
+      <div class="col-sm-8 profile-value"><%=family %></div>
+    </div>
+  </div>
 </div>
-
-
-<script>
-  $(document).ready(function() {
-    var home = new Home($("#profile"));
-    home.registerEvents();
-  });
-</script>
-
-<%- include("partials/footer") -%>
+<%- include("partials/loading") -%>

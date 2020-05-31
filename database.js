@@ -1,5 +1,5 @@
 
-exports.insertRow = async function(Collection, data, callback) {
+exports.insertRow =  function(Collection, data, callback) {
   const newrow = new Collection(data);
   newrow.save(function(err, addeddata) {
     if(err) {
@@ -13,6 +13,17 @@ exports.insertRow = async function(Collection, data, callback) {
 
 exports.findAllRows = function(Collection, callback) {
   Collection.find(function(err, rows) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      callback(rows);
+    }
+  });
+}
+
+exports.findAndSortRows = function(Collection, sortObj ,callback) {
+  Collection.find().sort(sortObj).exec(function(err, rows) {
     if(err) {
       console.log(err);
     }
@@ -50,7 +61,7 @@ exports.deleteRow = function(Collection, condition, callback) {
       console.log(err);
     }
     else {
-      callback(rows);
+      callback(deleteddata);
     }
   });
 }

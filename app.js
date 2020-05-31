@@ -12,6 +12,10 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+app.use("/jquery-autogrow-textarea",express.static(__dirname + "/node_modules/jquery-autogrow-textarea"));
+app.use("/froala-editor", express.static(__dirname + "/node_modules/froala-editor"));
+
+
 util.setSession(app);
 
 const collection = util.collection;
@@ -27,6 +31,7 @@ app.post("/login",  function(req, res) {
     if(password === user.password) {
       req.session.user_id = username;
       req.session.save();
+      res.locals.user_id = req.session.user_id;
       res.redirect("/home");
     }
     else {
@@ -36,18 +41,18 @@ app.post("/login",  function(req, res) {
 });
 
 app.get("/home", util.redirectLogin, function(req, res) {
-  db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, function(flat) {
-    res.render(util.getTemplate(req),  util.getTemplateObject(req, flat));
+  db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, async function(flat) {
+    res.render(await util.getTemplate(req),  await util.getTemplateObject(req, flat));
   });
 });
 
-app.get("/maintanance", util.redirectLogin, function(req, res) {
-  res.render(util.getTemplate(req),  util.getTemplateObject(req, {}));
+app.get("/maintanance", util.redirectLogin, async function(req, res) {
+  res.render(await util.getTemplate(req),  await util.getTemplateObject(req, {}));
 });
 
 app.get("/forums", util.redirectLogin, function(req, res) {
-  db.findAllRows(collection.Forum, function(forums) {
-    res.render(util.getTemplate(req), util.getTemplateObject(req, {"forums" : forums}));
+  db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
+    res.render(await util.getTemplate(req), await util.getTemplateObject(req, {"forums" : forums}));
   });
 });
 
@@ -55,22 +60,76 @@ app.get("/forum/compose", util.redirectLogin, function(req, res) {
   res.render(constants.COMPOSE);
 });
 
+app.post("/forums/delete", util.redirectLogin, function(req, res) {
+  db.deleteRow(collection.Forum, req.body, function(resp) {
+    db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
+      res.render(constants.FORUMS, await util.getTemplateObject(req, {"forums" : forums}));
+    });
+  });
+});
+
 app.get("/forum/:forum_id", util.redirectLogin, function(req, res) {
   db.findRow(collection.Forum, {"_id": req.params.forum_id}, async function(forum) {
     let forumObj = await util.getForumObject(forum);
-    res.render(constants.FORUM , forumObj);
+    res.render(await util.getTemplate(req) , await util.getTemplateObject(req, forumObj));
+  });
+});
+
+app.post("/newforum", util.redirectLogin, function(req, res) {
+  let forumObj = req.body;
+  Object.assign(forumObj,
+    {"author" : req.session.user_id,
+     "comments" : [],
+     "likes" : [],
+     "date" : new Date()
+   });
+  db.insertRow(collection.Forum, forumObj, function(response) {
+    db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
+      res.render(constants.FORUMS, await util.getTemplateObject(req, {"forums" : forums}));
+    });
+  });
+});
+
+app.post("/comment", util.redirectLogin, function(req, res) {
+  db.findRow(collection.Forum, {"_id": req.body.forum_id}, function(forum) {
+    forum.comments.push({
+      "author": req.session.user_id,
+      "content": req.body.content,
+      "date": new Date()
+    });
+    db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
+      let forumObj = await util.getForumObject(forum);
+      res.render(constants.FORUM , forumObj);
+    });
+  });
+});
+
+app.post("/like", util.redirectLogin, function(req, res) {
+  db.findRow(collection.Forum, {"_id": req.body.forum_id}, function(forum) {
+    let loginuser = req.session.user_id;
+    if(forum.likes.indexOf(loginuser)  === -1 ) {
+      forum.likes.push(loginuser);
+    }
+    else {
+      let filteredArr = forum.likes.filter((user) => user !== loginuser);
+      forum.likes = filteredArr;
+    }
+    db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
+      let forumObj = await util.getForumObject(forum);
+      res.render(constants.FORUM , forumObj);
+    });
   });
 });
 
 app.get("/contacts",  util.redirectLogin,  function(req,res) {
-  db.findAllRows(Contact, function(contacts) {
-    res.render(util.getTemplate(req) , util.getTemplateObject(req, {"contacts" : contacts}));
+  db.findAllRows(collection.Contact, async function(contacts) {
+    res.render(await util.getTemplate(req) ,await util.getTemplateObject(req, {"contacts" : contacts}));
   });
 });
 
 app.get("/settings", util.redirectLogin,  function(req,res) {
-  db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, function(flat) {
-    res.render(util.getTemplate(req) ,  util.getTemplateObject(req, flat));
+  db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, async function(flat) {
+    res.render(await util.getTemplate(req) ,  await util.getTemplateObject(req, flat));
   });
 });
 
@@ -93,6 +152,7 @@ app.post("/updatePassword", util.redirectLogin, function(req, res) {
     }
   });
 });
+
 
 app.post("/logout", function(req, res) {
   req.session.destroy( (err) => {

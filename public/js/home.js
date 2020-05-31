@@ -21,8 +21,8 @@ class Home
 
     $(this.home).ready(function() {
       $(".menu-option").removeClass("active");
-      let pathname = window.location.pathname;
-      $("li[class=menu-option][name='" + pathname + "']").addClass("active");
+      let activeMenu = $("#rightpane").attr("name");
+      $("li.menu-option." + activeMenu).addClass("active");
     });
 
     $(this.home).on("click", ".menu-option:not('.logout')", function() {
@@ -38,7 +38,6 @@ class Home
           hideLoading();
           window.history.pushState("Apartment", "StepsStone Ananthaya", requrl);
           $("#rightpane").html(res);
-          $("#rightpane").append(loadingHtml());
         }
       });
     });

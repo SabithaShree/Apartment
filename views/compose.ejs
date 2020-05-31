@@ -7,12 +7,12 @@
 </script>
 
 <div id="newforum-container" class="newforum-container container-fluid">
-  <form action="/newforum" method="post">
+  <form id="newforum-form">
     <div class="form-group">
       <input class="form-control" type="text" name="title" placeholder="Title of the post">
     </div>
-    <div id="richtext-editor" class="richtext-editor">
-
+    <div class="richtext-editor">
+      <textarea name="content" id="richtext-editor"></textarea>
     </div>
     <div class="form-group text-center">
         <button class="btn btn-primary" type="submit">Post</button>
@@ -20,3 +20,4 @@
     </div>
   </form>
 </div>
+<%- include("partials/loading") -%>

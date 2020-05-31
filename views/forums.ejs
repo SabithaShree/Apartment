@@ -13,15 +13,15 @@
     <div name="post" class="post" forum_id="<%= forum._id %>">
       <div class="row">
         <div class="image-sec col-2 center">
-          <img class="post-pro-pic" src="images/profile.jpg" alt="profile-pic">
+          <img class="post-pro-pic" src="/images/profile.jpg" alt="profile-pic">
         </div>
         <div class="post-sec col-8">
           <h5><%= forum.title %></h5>
-          <p><%= forum.content %></p>
+          <p><%- forum.content %></p>
         </div>
         <div class="comments-sec col-2">
           <div class="likes">
-            <i class="far fa-thumbs-up"></i><span><%= forum.like %></span>
+            <i class="far fa-thumbs-up"></i><span><%= forum.likes.length %></span>
           </div>
           <div class="comments">
             <i class="far fa-comment-alt"></i><span><%= forum.comments.length %></span>
@@ -31,3 +31,4 @@
     </div>
     <% }); %>
 </div>
+<%- include("partials/loading") -%>

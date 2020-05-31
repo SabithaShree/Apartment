@@ -5,7 +5,7 @@
           <% category.members.forEach(function(member) { %>
           <div class="col-4 contact-col">
             <h3><%= category.title %></h3>
-            <img class="contact-pic" src="images/profile.jpg" alt="contact-pic">
+            <img class="contact-pic" src="/images/profile.jpg" alt="contact-pic">
             <h5><%= member.name %></h5>
             <p><%= member.contact %></p>
           </div>
@@ -19,7 +19,7 @@
     <div class="row contact">
       <% category.members.forEach(function(member) { %>
         <div class="col-4 contact-col">
-          <img class="contact-pic" src="images/profile.jpg" alt="contact-pic">
+          <img class="contact-pic" src="/images/profile.jpg" alt="contact-pic">
           <h5><%= member.name %></h5>
           <p><%= member.contact %></p>
         </div>
@@ -28,3 +28,4 @@
     <% } %>
   <% }); %>
 </div>
+<%- include("partials/loading") -%>

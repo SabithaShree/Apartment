@@ -11,6 +11,7 @@ const Contact = model.Contact();
 const Forum = model.Forum();
 
 global.constants = Object.freeze({
+  "WELCOME": "welcome",
   "HOME": "home",
   "PROFILE": "profile",
   "MAINTANANCE": "maintanance",
@@ -51,13 +52,19 @@ exports.setSession = function(app) {
       return uuidv4() // use UUIDs for session IDs
     },
     store: new MongoStore({
-      mongooseConnection: mongoose.connection }), // store sessionId in mongodb
+      mongooseConnection: mongoose.connection
+    }), // store sessionId in mongodb
     cookie: {
       secure: (app.get('env') === 'production'), // development or production
       maxAge:  24 * 60 * 60 * 1000 // 1  day
     }
   };
   app.use(session(sessionObj));
+
+  app.use(function(req, res, next) {
+    res.locals.user_id = req.session.user_id; // make it access globally across all templates
+    next();
+  });
 }
 
 function isAjaxRequest(req)
@@ -67,34 +74,39 @@ function isAjaxRequest(req)
 
 exports.getTemplate =  function(req)
 {
-  const isAjax = isAjaxRequest(req);
-  let url = req.url;
-  url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
-  url = (url == constants.HOME) ? constants.PROFILE : url;
-  let template = isAjax ? url : constants.HOME;
-  return template;
+  return new Promise((resolve) => {
+    const isAjax = isAjaxRequest(req);
+    let url = req.url;
+    url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
+    url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url;
+    let template = isAjax ? url : constants.WELCOME;
+    resolve(template);
+  });
 }
 
 exports.getTemplateObject = function(req, templateObj)
 {
-  let url = req.url;
-  url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
-  let template = (url == constants.HOME) ? constants.PROFILE : url;
-  Object.assign(templateObj, {"template": template})
-  return templateObj;
+  return new Promise((resolve) => {
+    let url = req.url;
+    url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
+    url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url;
+    templateObj.template = url;
+    resolve(templateObj);
+  });
 }
 
-exports.getForumObject = async function(forum, callback)
+exports.getForumObject = function(forum, callback)
 {
   return new Promise(async (resolve) => {
     let forumObj = forum;
     let username = await getUserName(forumObj.author);
-
+    forumObj.author_id = forumObj.author;
     forumObj.author = username;
 
     for(var i=0; i<forumObj.comments.length; i++)
     {
       let username = await getUserName(forumObj.comments[i].author);
+      forumObj.comments[i].author_id = forumObj.comments[i].author;
       forumObj.comments[i].author = username;
     };
     resolve(forumObj);

@@ -29,6 +29,7 @@
 }
 
 .post-sec h5 {
+  color: #ff3333;
   padding: 1% 0;
   border-bottom: 2px solid #ffe0cc;
 }
@@ -46,11 +47,12 @@
 /* second page */
 
 .forum-container {
-  max-width: fit-content;
+  max-width: 92%;
   background-color: white;
   margin: 4%;
   box-shadow: 3px 3px 20px #ffe0cc;
   padding: 6%;
+  position: relative;
 }
 
 .forum-title {
@@ -73,8 +75,8 @@
 
 .forum-response {
   padding: 2% 0;
-  border-top: 1px dotted;
-  border-bottom: 1px dotted;
+  /* border-top: 1px dotted; */
+  border-bottom: 3px dotted #ffe0cc;
 }
 
 .like-button, .comment-button {
@@ -111,7 +113,7 @@
 }
 
 .comment-body {
-  border: 1px dotted;
+  border: 1px solid #ffe0cc;
   box-shadow: -1px 1px 3px #c0c0c0;
   border-radius: 5%;
   margin-left: 1%;
@@ -119,6 +121,7 @@
 
 .comment-content {
   margin-bottom: 0;
+  white-space: pre-wrap;
 }
 
 .comment-pro-pic {
@@ -126,6 +129,52 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
+}
+
+.comment-input {
+  height: 100%;
+  width: 100%;
+  padding: 2%;
+  resize: none;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  min-height: 90px;
+}
+
+.post-comment-icon {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  color: #ff3333;
+}
+
+.post-comment-icon:hover, .delete-comment-icon:hover {
+  cursor: pointer;
+}
+
+.delete-comment-icon {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  color: #ff3333;
+  font-size: 0.9rem;
+}
+
+.more-options {
+  font-size: 1.2rem;
+  float: right;
+}
+
+.more-options:hover {
+  cursor: pointer;
+}
+
+.more-options-menu {
+  right: 0;
+  top: 0;
+  left: unset;
 }
 
 /* compose page */
