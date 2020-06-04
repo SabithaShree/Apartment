@@ -35,7 +35,8 @@
   <div class="forum-header">
     <div class="row">
       <div class="col-2 center">
-        <img class="post-pro-pic forum-pic" src="/images/profile.jpg" alt="profile-pic">
+        <% let imagePath = "/uploads/" + photo; %>
+        <img class="post-pro-pic forum-pic" src="<%= imagePath %>" alt="profile-pic">
         <p><%= author %></p>
       </div>
       <div class="col-10">
@@ -48,7 +49,7 @@
   </div>
 
   <div class="forum-body">
-    <p><%- content %></p>
+    <%- content %>
   </div>
 
   <div class="forum-response">
@@ -68,9 +69,10 @@
     <% comments.forEach(function(comment) {%>
       <div class="row comment">
         <div class="col-1">
-          <img class="comment-pro-pic" src="/images/profile.jpg" alt="profile-pic">
+          <% let imagePath = "/uploads/" + comment.photo; %>
+          <img class="comment-pro-pic" src="<%= imagePath %>" alt="profile-pic">
         </div>
-        <div class="comment-body col-10">
+        <div class="comment-body col-10" id="<%= comment._id%>">
           <p class="comment-user"><%= comment.author%></p>
           <% let d = comment.date %>
           <span class="forum-date">
@@ -78,21 +80,24 @@
           </span>
           <p class="comment-content"><%= comment.content%></p>
           <% let dflag = (user_id == comment.author_id) ? "" : "hide"; %>
-          <i id="delete-comment" class="delete-comment-icon fas fa-trash-alt <%= dflag %>"></i>
+          <i id="delete-comment"
+            class="delete-comment-icon fas fa-trash-alt <%= dflag %>">
+          </i>
         </div>
       </div>
     <% }) %>
 
     <div id="new-comment" class="row comment hide">
       <div class="col-1">
-        <img class="comment-pro-pic" src="/images/profile.jpg" alt="profile-pic">
+        <img class="comment-pro-pic" src="/images/blank-profile.png" alt="profile-pic">
       </div>
       <div class="comment-body col-10">
-        <textarea class="comment-input" name="content" placeholder="Enter your comment..."/>
+        <textarea class="comment-input" name="content" placeholder="Enter your comment..."></textarea>
         <i id="post-comment" class="post-comment-icon fas fa-paper-plane"></i>
       </div>
     </div>
   </div>
 
 </div>
+<%- include("partials/alert-popup") -%>
 <%- include("partials/loading") -%>

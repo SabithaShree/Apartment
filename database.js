@@ -55,6 +55,17 @@ exports.updateRow = function(Collection, condition, updatedata, callback) {
   });
 }
 
+exports.findAndUpdateRow = function(Collection, condition, updatedata, callback) {
+  Collection.findOneAndUpdate(condition, updatedata, {new: true}, function(err, newdata) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      callback(newdata);
+    }
+  })
+}
+
 exports.deleteRow = function(Collection, condition, callback) {
   Collection.deleteOne(condition, function(err, deleteddata){
     if(err) {

@@ -31,11 +31,6 @@ h1, h2 {
   margin-right: 20px;
 }
 
-.btn-cancel:hover {
-  color: #007bff;
-  background-color: #d9d9d9;
-}
-
 .status-bar {
   position: fixed;
   left: 50%;

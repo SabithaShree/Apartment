@@ -26,5 +26,35 @@ class Settings
         }
       });
     });
+
+    $(this.settings).on("submit", ".updateprofile-form", function(e) {
+      e.preventDefault();
+      let formData = $(this).serialize();
+      $.ajax({
+        url : "/updateProfile",
+        method : "POST",
+        data: formData,
+        beforeSend : showStatus("Updating..."),
+        success : function(res, status, xhr) {
+          hideStatus();
+          $("#rightpane").html(res);
+        }
+      });
+    });
+
+    $(this.settings).on("submit", ".updatepassword-form", function(e) {
+      e.preventDefault();
+      let formData = $(this).serialize();
+      $.ajax({
+        url : "/updatePassword",
+        method : "POST",
+        data: formData,
+        beforeSend : showStatus("Updating..."),
+        success : function(res, status, xhr) {
+          hideStatus();
+          $("#rightpane").html(res);
+        }
+      });
+    });
   }
 }

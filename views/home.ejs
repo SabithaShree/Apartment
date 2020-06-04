@@ -3,7 +3,8 @@
   </div>
   <div class="row">
     <div class="col-3">
-      <img class="profile-pic" src="/images/profile.jpg" alt="profile-pic">
+      <% let imagePath = "/uploads/" + photo; %>
+      <img class="profile-pic" src=<%= imagePath %> alt="profile-pic">
     </div>
     <div class="col-9">
       <div class="profile-desc container-fluid">

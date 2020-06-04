@@ -63,6 +63,8 @@ exports.setSession = function(app) {
 
   app.use(function(req, res, next) {
     res.locals.user_id = req.session.user_id; // make it access globally across all templates
+    res.locals.user_name = req.session.user_photo;
+    res.locals.user_name = req.session.user_photo;
     next();
   });
 }
@@ -95,19 +97,34 @@ exports.getTemplateObject = function(req, templateObj)
   });
 }
 
-exports.getForumObject = function(forum, callback)
+exports.getForumsObject = async function(forums)
+{
+  return new Promise(async (resolve) => {
+    let forumsArr = forums;
+    for(let i=0; i<forumsArr.length; i++) {
+      forumsArr[i].photo = await getUserPhoto(forumsArr[i].author);
+    }
+    resolve(forumsArr);
+  });
+}
+
+exports.getForumObject = function(forum)
 {
   return new Promise(async (resolve) => {
     let forumObj = forum;
     let username = await getUserName(forumObj.author);
+    let userPic = await getUserPhoto(forumObj.author);
     forumObj.author_id = forumObj.author;
     forumObj.author = username;
+    forumObj.photo = userPic;
 
     for(var i=0; i<forumObj.comments.length; i++)
     {
-      let username = await getUserName(forumObj.comments[i].author);
+      let cmtUserName = await getUserName(forumObj.comments[i].author);
+      let commentUserPic = await getUserPhoto(forumObj.comments[i].author);
       forumObj.comments[i].author_id = forumObj.comments[i].author;
-      forumObj.comments[i].author = username;
+      forumObj.comments[i].author = cmtUserName;
+      forumObj.comments[i].photo = commentUserPic;
     };
     resolve(forumObj);
   });
@@ -116,14 +133,19 @@ exports.getForumObject = function(forum, callback)
 async function getUserName(flat_id)
 {
   return new Promise((resolve) => {
-    let username = "ABC";
-
     db.findRow(Flat, {"flat_id": flat_id}, function(flat)  {
-      username = flat.name;
-      resolve(username);
+      resolve(flat.name);
     });
   });
+}
 
+async function getUserPhoto(flat_id)
+{
+  return new Promise((resolve) => {
+    db.findRow(Flat, {"flat_id": flat_id}, function(flat)  {
+      resolve(flat.photo);
+    });
+  })
 }
 
 

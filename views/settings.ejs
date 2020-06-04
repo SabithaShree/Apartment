@@ -13,7 +13,7 @@
   </div>
 
 
-  <form class="updateprofile-form form-horizontal settings-form" method="post" action="/updateProfile">
+  <form class="updateprofile-form form-horizontal settings-form" method="post" enctype="multipart/form-data">
     <div class="form-group row">
       <label class="control-label col-sm-2" for="name">Name</label>
       <div class="col-sm-10">
@@ -38,6 +38,12 @@
         <input name="family" type="text" class="form-control" id="phone" value="<%=family%>" placeholder="Number of family members">
       </div>
     </div>
+    <div class="form-group row">
+      <label class="col-sm-2" for="photo">Photo</label>
+      <div class="col-sm-10">
+          <input name="photo" type="file" class="form-control-file" id="photo" accept="image/*">
+      </div>
+    </div>
     <div class="form-group text-center">
         <button class="btn btn-primary" type="submit">Update</button>
         <button class="btn btn-outline-primary btn-cancel" type="submit">Cancel</button>
@@ -45,7 +51,7 @@
   </form>
 
 
-  <form class="updatepassword-form form-horizontal settings-form hide" method="post" action="/updatePassword">
+  <form class="updatepassword-form form-horizontal settings-form hide" method="post">
     <div class="form-group row">
       <label class="control-label col-sm-4" for="opassword">Old Password</label>
       <div class="col-sm-8">
