@@ -1,10 +1,18 @@
-class Forum {
-  constructor(forumEle) {
-    this.forum = forumEle;
-  }
+class Forum
+{
 
-  registerForumsEvents() {
-    $(this.forum).on("click", "div[name=post]", function() {
+  registerForumsEvents(forums)
+  {
+    let contentsArr = $(".content-short");
+    $.each(contentsArr, (index, content) => {
+      let croppedContent = $(content).html().split("</p>")[0] + " ...";
+      if(croppedContent.length > 70) {
+        croppedContent = croppedContent.substr(0, 50) + "...";
+      }
+      $(content).html(croppedContent);
+    });
+
+    $(forums).on("click", "div[name=post]", function() {
       let reqUrl = "/forum/" + $(this).attr("forum_id");
       $.ajax({
         url: "/forum/" + $(this).attr("forum_id"),
@@ -19,7 +27,7 @@ class Forum {
       });
     });
 
-    $(this.forum).on("click", "#compose", function() {
+    $(forums).on("click", "#compose", function() {
       $.ajax({
         url: "/forum/compose",
         method: "GET",
@@ -32,10 +40,11 @@ class Forum {
     });
   }
 
-  registerForumEvents() {
-    $(this.forum).on("click", ".like-button", function() {
+  registerForumEvents(forum)
+  {
+    $(forum).on("click", ".like-button", function() {
       let likebutton = this;
-      let forum_id = $("#forum-container").attr("forum_id");
+      let forum_id = $(forum).attr("forum_id");
       $.ajax({
         url: "/like",
         method: "POST",
@@ -52,17 +61,18 @@ class Forum {
       });
     });
 
-    $(this.forum).on("click", ".comment-button", function() {
+    $(forum).on("click", ".comment-button", function() {
       $("#new-comment").removeClass("hide");
-      $("#new-comment").autogrow();
+      $("#new-comment").find(".comment-input").autogrow();
+      $("#new-comment").find(".comment-input").focus();
       $("html, body").animate({
         scrollTop: $("#new-comment").offset().top
       }, 1000);
     });
 
-    $(this.forum).on("click", "#post-comment", function(e) {
+    $(forum).on("click", "#post-comment", function(e) {
       let content = $("#new-comment").find("textarea[name=content]").val();
-      let forum_id = $("#forum-container").attr("forum_id");
+      let forum_id = $(forum).attr("forum_id");
       $.ajax({
         url: "/comment",
         method: "POST",
@@ -76,16 +86,16 @@ class Forum {
       });
     });
 
-    $(this.forum).on("click", "#delete-comment", function() {
+    $(forum).on("click", "#delete-comment", function() {
       let delIcon = this;
       $("#alert-popup").modal("show");
       $("#alert-popup").on("click", ".btn-delete", function() {
-        let forum_id = $("#forum-container").attr("forum_id");
+        let forum_id = $(forum).attr("forum_id");
         let comment_id = $(delIcon).closest(".comment-body").attr("id");
         $.ajax({
           url: "/deletecomment",
           method: "POST",
-          beforeSend: showStatus("Delelted !"),
+          beforeSend: showStatus("Deleting..."),
           data: {
             "forum_id": forum_id,
             "comment_id": comment_id
@@ -93,7 +103,7 @@ class Forum {
           success: function(res, status, xhr) {
             hideStatus();
             $("#alert-popup").modal("hide");
-            $("body").removeClass('modal-open');
+            $("body").removeClass("modal-open");
             $(".modal-backdrop").remove();
             $("#rightpane").html(res);
           }
@@ -101,30 +111,41 @@ class Forum {
       });
     });
 
-    $(this.forum).on("click", "#more-options", function() {
+    $(forum).on("click", "#more-options", function() {
       $("#more-options-menu").show();
     });
 
-    $(this.forum).on("click", "#delete-forum", function(e) {
+    $(forum).on("click", "#delete-forum", function(e) {
       e.preventDefault();
-      let forum_id = $("#forum-container").attr("forum_id");
-      $.ajax({
-        url: "/forums/delete",
-        method: "POST",
-        beforeSend: showStatus("Deleting..."),
-        data: {
-          "_id": forum_id
-        },
-        success: function(res, status, xhr) {
-          $("#rightpane").html(res);
-          hideStatus();
-        }
+
+      $("#alert-popup").modal("show");
+      $("#alert-popup").on("click", ".btn-delete", function() {
+        let forum_id = $(forum).attr("forum_id");
+
+        let images = $(".forum-body").find("img").map(function() { return $(this).attr("src"); }).get();
+
+        $.ajax({
+          url: "/forums/delete",
+          method: "POST",
+          beforeSend: showStatus("Deleting..."),
+          data: {
+            "_id": forum_id,
+            "images": images
+          },
+          success: function(res, status, xhr) {
+            $("#alert-popup").modal("hide");
+            $("body").removeClass("modal-open");
+            $(".modal-backdrop").remove();
+            $("#rightpane").html(res);
+            hideStatus();
+          }
+        });
       });
     });
 
-    $(this.forum).on("click", "#edit-forum", function(e) {
+    $(forum).on("click", "#edit-forum", function(e) {
       e.preventDefault();
-      let forum_id = $("#forum-container").attr("forum_id");
+      let forum_id = $(forum).attr("forum_id");
       let forumHtml = $(".forum-body").html();
       let forumTitle = $(".forum-title").text();
       $.ajax({
@@ -133,7 +154,11 @@ class Forum {
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
           $("#rightpane").html(res);
-          var editor = new FroalaEditor("#richtext-editor", {}, function() {
+          var editor = new FroalaEditor("#richtext-editor",{
+            imageUploadURL: "/forum/uploadImage",
+            imageUploadParam: "image"
+          },
+          function() {
             $("#newforum-container").find("input[name=title]").val(forumTitle);
             $("#newforum-container").find(".btn-primary").text("Update");
             $("#newforum-container").find("#newforum-form").attr("id", "updateforum-form");
@@ -152,8 +177,8 @@ class Compose {
     this.forum = newforum;
   }
 
-  registerEvents() {
-    $(this.forum).on("click", ".btn-cancel", function(e) {
+  registerEvents(forum) {
+    $(forum).on("click", ".btn-cancel", function(e) {
       e.preventDefault();
       $.ajax({
         url: "/forums",
@@ -166,7 +191,7 @@ class Compose {
       });
     });
 
-    $(this.forum).on("submit", "#newforum-form", function(e) {
+    $(forum).on("submit", "#newforum-form", function(e) {
       e.preventDefault();
       $.ajax({
         url: "/newforum",
@@ -180,7 +205,7 @@ class Compose {
       });
     });
 
-    $(this.forum).on("submit", "#updateforum-form", function(e) {
+    $(forum).on("submit", "#updateforum-form", function(e) {
       e.preventDefault();
       let forum_id = $("#updateforum-form").attr("forum_id");
       $.ajax({
@@ -194,5 +219,20 @@ class Compose {
         }
       });
     });
+  }
+
+  registerEditorEvents(editor) {
+    editor.opts.events["image.removed"] = function ($img) {
+      console.log($img);
+      $.ajax({
+        url: "/forum/deleteImage",
+        method: "POST",
+        data: {
+          image: $img.attr("src")
+        },
+        success: function(res, status, xhr) {
+        }
+      });
+    }
   }
 }

@@ -12,20 +12,16 @@
 
 class Home
 {
-  constructor(homeEle) {
-    this.home = homeEle;
-  }
-
-  registerEvents()
+  registerEvents(home)
   {
 
-    $(this.home).ready(function() {
+    $(home).ready(function() {
       $(".menu-option").removeClass("active");
       let activeMenu = $("#rightpane").attr("name");
       $("li.menu-option." + activeMenu).addClass("active");
     });
 
-    $(this.home).on("click", ".menu-option:not('.logout')", function() {
+    $(home).on("click", ".menu-option:not('.logout')", function() {
       $(this).siblings().removeClass("active");
       $(this).addClass("active");
 
@@ -42,7 +38,7 @@ class Home
       });
     });
 
-    $(this.home).on("click", "#logout",  function() {
+    $(home).on("click", "#logout",  function() {
       $.post("/logout" , function() {
         window.location.href = "/";
       });

@@ -1,7 +1,7 @@
 <script>
   $(document).ready(function() {
-    var forum = new Forum($("#forums-container"));
-    forum.registerForumsEvents();
+    var forum = new Forum();
+    forum.registerForumsEvents($("#forums-container"));
   });
 </script>
 <div id="forums-container" class="forums-container container-fluid">
@@ -17,7 +17,9 @@
         </div>
         <div class="post-sec col-8">
           <h5><%= forum.title %></h5>
-          <p><%- forum.content %></p>
+          <div class="content-short">
+            <%- forum.content %>
+          </div>
         </div>
         <div class="comments-sec col-2">
           <div class="likes">

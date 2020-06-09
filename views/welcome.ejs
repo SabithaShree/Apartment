@@ -4,18 +4,19 @@
 <script type="text/javascript" src="/js/home.js"></script>
 <script type="text/javascript" src="/js/settings.js"></script>
 <script type="text/javascript" src="/js/forum.js"></script>
+<script type="text/javascript" src="/js/complaints.js"></script>
 
 <script>
   $(document).ready(function() {
-    var home = new Home($("#profile"));
-    home.registerEvents();
+    var home = new Home();
+    home.registerEvents($("#main-container"));
   });
 </script>
 
-<div id="profile" class="profile full-height">
+<div id="main-container" class="main-container full-height">
   <!-- <i id="toggler-menu" class="toggler-icon fas fa-bars"></i> -->
   <div class="row full-height">
-    <div class="col-3 left-pane">
+    <div class="col-md-3 col-sm-0 left-pane">
       <div class="position-fixed">
         <ul class="menu-options">
           <li class="apt-title"><img class="leftpane-logo" src="/images/stepsstone-logo.png" alt="Logo">Ananthaya</li>
@@ -23,13 +24,14 @@
           <li class="menu-option maintanance" name="/maintanance"><i class="fas fa-rupee-sign"></i>Maintance</li>
           <li class="menu-option home" name="/home"><i class="fas fa-money-check"></i>Common Expenses</li>
           <li class="menu-option forums forum" name="/forums"><i class="fab fa-wpforms"></i>Forums</li>
+          <li class="menu-option complaints" name="/complaints"><i class="fas fa-tools"></i>Complaints</li>
           <li class="menu-option contacts" name="/contacts"><i class="fas fa-address-book"></i>Contacts</li>
           <li class="menu-option settings" name="/settings"><i class="fas fa-user"></i>Settings</li>
           <li class="menu-option logout" name="" id="logout">Sign Out</li>
         </ul>
       </div>
     </div>
-    <div id="rightpane" name="<%= template %>" class="col-9 profile-body">
+    <div id="rightpane" name="<%= template %>" class="col-md-9 col-sm-12 profile-body">
       <%- include(template) -%>
     </div>
   </div>

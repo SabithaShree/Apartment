@@ -9,6 +9,7 @@ const User = model.User();
 const Flat = model.Flat();
 const Contact = model.Contact();
 const Forum = model.Forum();
+const Complaint = model.Complaint();
 
 global.constants = Object.freeze({
   "WELCOME": "welcome",
@@ -20,7 +21,8 @@ global.constants = Object.freeze({
   "FORUMS": "forums",
   "EXPENSES": "expenses",
   "FORUM": "forum",
-  "COMPOSE": "compose"
+  "COMPOSE": "compose",
+  "COMPLAINTS": "complaints"
 });
 
 
@@ -37,7 +39,8 @@ exports.collection = {
   "User": User,
   "Flat": Flat,
   "Contact": Contact,
-  "Forum": Forum
+  "Forum": Forum,
+  "Complaint": Complaint
 };
 
 exports.setSession = function(app) {

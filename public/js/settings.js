@@ -1,13 +1,8 @@
 class Settings
 {
-  constructor(settingsEle)
+  registerEvents(settings)
   {
-    this.settings = settingsEle;
-  }
-
-  registerEvents()
-  {
-    $(this.settings).on("click", ".settings-menu", function() {
+    $(settings).on("click", ".settings-menu", function() {
       $(this).siblings().removeClass("active");
       $(this).addClass("active");
 
@@ -17,7 +12,7 @@ class Settings
     });
 
 
-    $(this.settings).on("click", ".btn-cancel", function() {
+    $(settings).on("click", ".btn-cancel", function() {
       $.ajax({
         url : "/home",
         method : "GET",
@@ -27,13 +22,15 @@ class Settings
       });
     });
 
-    $(this.settings).on("submit", ".updateprofile-form", function(e) {
+    $(settings).on("submit", ".updateprofile-form", function(e) {
       e.preventDefault();
-      let formData = $(this).serialize();
+      let formData = new FormData(this);
       $.ajax({
         url : "/updateProfile",
         method : "POST",
         data: formData,
+        processData: false,
+        contentType: false,
         beforeSend : showStatus("Updating..."),
         success : function(res, status, xhr) {
           hideStatus();
@@ -42,7 +39,7 @@ class Settings
       });
     });
 
-    $(this.settings).on("submit", ".updatepassword-form", function(e) {
+    $(settings).on("submit", ".updatepassword-form", function(e) {
       e.preventDefault();
       let formData = $(this).serialize();
       $.ajax({

@@ -6,6 +6,7 @@ const multer  = require("multer");
 const mime = require("mime");
 const https = require("https");
 const $ = require("jquery")
+// const FroalaEditor = require(__dirname + "/node_modules/froala-editor/lib/froalaEditor.js");
 const model = require(__dirname + "/model.js");
 const db = require(__dirname + "/database.js");
 const util = require(__dirname + "/util.js");
@@ -21,11 +22,30 @@ let storage = multer.diskStorage({
     cb(null,  __dirname + "/public/uploads/");
   },
   filename: function (req, file, cb) {
+    if(file.fieldname == "photo") { // profile image
      const photoName = "profile-" + req.session.user_id;
      cb(null, photoName + ".jpg");
    }
- });
+   else if(file.fieldname == "image") { // forum images
+      cb(null, req.session.user_id + Math.floor(Math.random()*100) + file.originalname);
+   }
+   else if(file.fieldname == "file") {
+     cb(null, file.originalname);
+   }
+ }
+});
  let upload = multer({ storage: storage });
+
+ // let forumStorage = multer.diskStorage({
+ //   destination: function(req, file, cb) {
+ //     cb(null,  __dirname + "/public/uploads/");
+ //   },
+ //   filename: function (req, file, cb) {
+ //     console.log(file);
+ //      cb(null, req.session.user_id + Math.floor(Math.random()*100) + file.originalname);
+ //    }
+ // });
+ // let forumUpload = multer({ storage: forumStorage });
 
 util.setSession(app);
 
@@ -62,22 +82,33 @@ app.get("/maintanance", util.redirectLogin, async function(req, res) {
   res.render(await util.getTemplate(req),  await util.getTemplateObject(req, {}));
 });
 
-app.get("/forums", util.redirectLogin, function(req, res) {
-  db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
-    let forumsObj = await util.getForumsObject(forums);
-    res.render(await util.getTemplate(req), await util.getTemplateObject(req, {"forums" : forumsObj}));
-  });
+app.get("/forums", util.redirectLogin, async function(req, res) {
+  renderForums(req, res, await util.getTemplate(req));
 });
 
 app.get("/forum/compose", util.redirectLogin, function(req, res) {
   res.render(constants.COMPOSE);
 });
 
+app.post("/forum/uploadImage", upload.single("image"), function(req, res) {
+  if(req.file != undefined) {
+    let resObj = {"link": "/uploads/" + req.file.filename};
+    res.send(resObj);
+  }
+});
+
+app.post("/forum/deleteImage", function(req, res) {
+  fs.unlinkSync(__dirname + "/public" + req.body.image);
+  res.send({status: 200, msg: "success"});
+});
+
 app.post("/forums/delete", util.redirectLogin, function(req, res) {
   db.deleteRow(collection.Forum, req.body, function(resp) {
-    db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
-      res.render(constants.FORUMS, await util.getTemplateObject(req, {"forums" : forums}));
-    });
+    let images = req.body.images;
+    for(var i=0; i<images.length; i++) {
+      fs.unlinkSync(__dirname + "/public" + images[i]);
+    }
+    renderForums(req, res, constants.FORUMS);
   });
 });
 
@@ -88,7 +119,7 @@ app.get("/forum/:forum_id", util.redirectLogin, function(req, res) {
   });
 });
 
-app.post("/newforum", util.redirectLogin, function(req, res) {
+app.post("/newforum", function(req, res) {
   let forumObj = req.body;
   Object.assign(forumObj,
     {"author" : req.session.user_id,
@@ -97,25 +128,21 @@ app.post("/newforum", util.redirectLogin, function(req, res) {
      "date" : new Date()
    });
   db.insertRow(collection.Forum, forumObj, function(response) {
-    db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
-      res.render(constants.FORUMS, await util.getTemplateObject(req, {"forums" : forums}));
-    });
+    renderForums(req, res, constants.FORUMS);
   });
 });
 
-app.post("/updateforum", util.redirectLogin, function(req, res) {
+app.post("/updateforum", function(req, res) {
   let newData = {
     "title" : req.body.title,
     "content" : req.body.content
   };
   db.findAndUpdateRow(collection.Forum, {"_id": req.body.forum_id}, newData, function(forum) {
-    db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
-      res.render(constants.FORUMS, await util.getTemplateObject(req, {"forums" : forums}));
-    });
+    renderForums(req, res, constants.FORUMS);
   });
 });
 
-app.post("/comment", util.redirectLogin, function(req, res) {
+app.post("/comment", function(req, res) {
   db.findRow(collection.Forum, {"_id": req.body.forum_id}, function(forum) {
     forum.comments.push({
       "author": req.session.user_id,
@@ -129,7 +156,7 @@ app.post("/comment", util.redirectLogin, function(req, res) {
   });
 });
 
-app.post("/deletecomment", util.redirectLogin, function(req, res) {
+app.post("/deletecomment", function(req, res) {
   db.findRow(collection.Forum, {"_id": req.body.forum_id}, function(forum) {
     forum.comments = forum.comments.filter((comment) => comment._id != req.body.comment_id);
     db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
@@ -140,7 +167,7 @@ app.post("/deletecomment", util.redirectLogin, function(req, res) {
 });
 
 
-app.post("/like", util.redirectLogin, function(req, res) {
+app.post("/like",  function(req, res) {
   db.findRow(collection.Forum, {"_id": req.body.forum_id}, function(forum) {
     let loginuser = req.session.user_id;
     if(forum.likes.indexOf(loginuser)  === -1 ) {
@@ -154,6 +181,12 @@ app.post("/like", util.redirectLogin, function(req, res) {
       let forumObj = await util.getForumObject(forum);
       res.render(constants.FORUM , forumObj);
     });
+  });
+});
+
+app.get("/complaints", util.redirectLogin, function(req, res) {
+  db.findAllRows(collection.Complaint, async function(complaints) {
+    res.render(await util.getTemplate(req), await util.getTemplateObject(req, {"complaints": complaints}));
   });
 });
 
@@ -180,7 +213,7 @@ app.post("/updateProfile", upload.single("photo"), function(req, res) {
   });
 });
 
-app.post("/updatePassword", util.redirectLogin, function(req, res) {
+app.post("/updatePassword", function(req, res) {
   db.findRow(collection.User, {"username" : req.session.user_id}, function(user) {
     if(req.body.oldPassword === user.password) {
       db.updateRow(collection.User, {"username" : req.session.user_id}, {"password": req.body.password}, function(updatedResult) {
@@ -201,6 +234,15 @@ app.post("/logout", function(req, res) {
  });
 });
 
+
+function renderForums(req, res, render)
+{
+  db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
+    let forumsObj = await util.getForumsObject(forums);
+    res.render(render, await util.getTemplateObject(req, {"forums" : forumsObj}));
+  });
+}
+
 let port = process.env.PORT;
 if (port == null || port == "") {
   port = 5000;
@@ -212,4 +254,4 @@ if (port == null || port == "") {
 // }, app)
 app.listen(port, function () {
   console.log("Server started on port 5000");
-})
+});

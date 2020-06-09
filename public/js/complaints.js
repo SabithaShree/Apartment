@@ -1,0 +1,6 @@
+class Complaint
+{
+  registerEvents(complaint)
+  {
+  }
+}

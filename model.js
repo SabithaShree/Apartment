@@ -57,3 +57,17 @@ exports.Forum = function()
   });
   return mongoose.model("Forum", forumSchema);
 }
+
+exports.Complaint = function()
+{
+  const Schema = mongoose.Schema;
+  const complaintSchema = new Schema({
+    flat_id: String,
+    complaint: String,
+    status: {
+      type: String,
+      enum: ["Open", "In-progress", "Close"]
+    }
+  });
+  return mongoose.model("Complaint", complaintSchema);
+}

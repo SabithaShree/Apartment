@@ -1,8 +1,12 @@
 <script>
   $(document).ready(function() {
-    var editor = new FroalaEditor("#richtext-editor");
-    var compose = new Compose("#newforum-container");
-    compose.registerEvents();
+    var editor = new FroalaEditor("#richtext-editor", {
+        imageUploadURL: "/forum/uploadImage",
+        imageUploadParam: "image"
+      });
+    var compose = new Compose();
+    compose.registerEvents("#newforum-container");
+    compose.registerEditorEvents(editor);
   })
 </script>
 

@@ -1,8 +1,8 @@
 <script>
   $(document).ready(function()
   {
-    var forum = new Forum($("#forum-container"));
-    forum.registerForumEvents();
+    var forum = new Forum();
+    forum.registerForumEvents($("#forum-container"));
   });
 </script>
 <div id="forum-container" forum_id="<%= _id %>" class="forum-container container-fluid">
@@ -34,12 +34,12 @@
   %>
   <div class="forum-header">
     <div class="row">
-      <div class="col-2 center">
+      <div class="col-lg-2 col-sm-4 center">
         <% let imagePath = "/uploads/" + photo; %>
         <img class="post-pro-pic forum-pic" src="<%= imagePath %>" alt="profile-pic">
-        <p><%= author %></p>
+        <p class="forum-author"><%= author %></p>
       </div>
-      <div class="col-10">
+      <div class="col-lg-10 col-sm-8">
         <h1 class="forum-title"><%=title %></h1>
         <p class="forum-date">
           <%= getDateStr(date) + "  " + getTimeStr(date) %>
@@ -68,7 +68,7 @@
 
     <% comments.forEach(function(comment) {%>
       <div class="row comment">
-        <div class="col-1">
+        <div class="col-2">
           <% let imagePath = "/uploads/" + comment.photo; %>
           <img class="comment-pro-pic" src="<%= imagePath %>" alt="profile-pic">
         </div>
@@ -88,7 +88,7 @@
     <% }) %>
 
     <div id="new-comment" class="row comment hide">
-      <div class="col-1">
+      <div class="col-2">
         <img class="comment-pro-pic" src="/images/blank-profile.png" alt="profile-pic">
       </div>
       <div class="comment-body col-10">

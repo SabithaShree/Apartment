@@ -18,7 +18,7 @@ hr {
   padding: 2% 8%;
 }
 
-.profile, .left-pane {
+.main-container, .left-pane {
   padding: 0;
 }
 
@@ -35,8 +35,8 @@ hr {
 
 .profile-pic {
   object-fit: cover;
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: 10px solid white;
 }
@@ -51,11 +51,12 @@ hr {
 }
 
 .profile-desc {
-  padding : 10% 5% 0 8%;
+  padding : 6% 5% 0 8%;
 }
 
 .profile-detail {
   padding: 2% 0;
+  margin: 2% 0;
 }
 
 .profile-label {
@@ -72,7 +73,7 @@ hr {
 
 .freeze {
   width: 100%;
-  height: 100%;
+  height: autp;
   background-color: black;
   opacity: 0.5;
   position: fixed;
@@ -124,4 +125,10 @@ hr {
   background-size: 50px 50px;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+@media (max-width : 480px) {
+  .profile-pic {
+    border: 5px solid white;
+  }
 }
