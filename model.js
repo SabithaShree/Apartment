@@ -63,7 +63,8 @@ exports.Complaint = function()
   const Schema = mongoose.Schema;
   const complaintSchema = new Schema({
     flat_id: String,
-    complaint: String,
+    title: String,
+    description: String,
     status: {
       type: String,
       enum: ["Open", "In-progress", "Close"]

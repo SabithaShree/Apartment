@@ -36,17 +36,6 @@ let storage = multer.diskStorage({
 });
  let upload = multer({ storage: storage });
 
- // let forumStorage = multer.diskStorage({
- //   destination: function(req, file, cb) {
- //     cb(null,  __dirname + "/public/uploads/");
- //   },
- //   filename: function (req, file, cb) {
- //     console.log(file);
- //      cb(null, req.session.user_id + Math.floor(Math.random()*100) + file.originalname);
- //    }
- // });
- // let forumUpload = multer({ storage: forumStorage });
-
 util.setSession(app);
 
 const collection = util.collection;
@@ -188,6 +177,14 @@ app.get("/complaints", util.redirectLogin, function(req, res) {
   db.findAllRows(collection.Complaint, async function(complaints) {
     res.render(await util.getTemplate(req), await util.getTemplateObject(req, {"complaints": complaints}));
   });
+});
+
+app.post("/newcomplaint", function(req, res) {
+    req.body.status = "Open";
+    req.body.flat_id = req.session.user_id;
+    db.insertRow(collection.Complaint, req.body, function(complaint) {
+      res.send(complaint);
+    });
 });
 
 app.get("/contacts",  util.redirectLogin,  function(req,res) {
