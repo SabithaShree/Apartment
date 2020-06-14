@@ -1,8 +1,45 @@
-.complaints-container {
-  padding: 8%;
+.complaints-container.container-fluid {
+  padding: 4%;
 }
 
 textarea.complaint-desc {
   resize: none;
   height: 250px;
+}
+
+.complaint {
+  background-color: white;
+  box-shadow: 3px 3px 20px #ffe0cc;
+  max-height: 8rem;
+  overflow: hidden;
+  padding: 2%;
+  margin: 4%;
+}
+
+.complaint-title:hover, .new-complaint:hover, .delete-complaint:hover {
+  cursor: pointer;
+}
+
+.complaint-date {
+  color: grey;
+}
+
+.complaint-form {
+  margin: 4%;
+}
+
+.complaint-title {
+  padding: 0 2%;
+}
+
+.red {
+  color: red;
+}
+
+.blue {
+  color: blue;
+}
+
+.green {
+  color: #00e600;
 }

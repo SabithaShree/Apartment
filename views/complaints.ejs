@@ -5,11 +5,59 @@
   });
 </script>
 <div id="complaints-container" class="complaints-container container-fluid">
-  <div id="no-complaints" class="center">
+
+  <%
+    function getDateStr(date)
+    {
+      const months = [
+            "January", "February", "March", "April", "May", "June", "July",
+            "August", "September", "October", "November", "December"];
+
+        const dateStr = months[date.getMonth()] + " " + date.getDate()+ ", " + date.getFullYear();
+        return dateStr;
+    }
+  %>
+  
+  <% let noComplaints = (complaints.length ==0 ) ? "" : "hide"; %>
+  <div id="no-complaints" class="center <%= noComplaints %>">
     <img src="/images/complaint.jpg" alt="complaint" class="block center">
-    <button id="new-complaint" class="btn btn-outline-danger">Lodge a complaint</button>
+    <button id="new-complaint-btn" class="btn btn-outline-danger">Raise a complaint</button>
   </div>
-  <form id="complaint-form" class="hide">
+  
+  
+  
+  <% let listComplaints = (complaints.length ==0 ) ? "hide" : ""; %>
+  <div id="complaints" class="<%= listComplaints %>">
+    <div id="new-complaint" class="complaint new-complaint center no-gutters">
+      <i class="fas fa-plus-circle"></i>
+      <span>Raise a new complaint</span>
+    </div>
+    <% complaints.forEach((complaint) => { %>
+      <div id="<%= complaint._id %>" class="row complaint no-gutters">
+        <div class="col-2 complaint-date">
+          <%= getDateStr(complaint.date) %>
+        </div>
+        <div class="col-7 complaint-title pl-3 pr-3">
+          <%= complaint.title %>
+        </div>
+        <div class="col-2 complaint-status">
+          <% let status = complaint.status;
+             let icon = (status == "Open") ? "lock-open" : (status == "Close") ? "lock" : "hourglass-half";
+             let color = (status == "Open") ? "green" : (status == "Close") ? "red" : "blue";
+          %>
+          <i class="fas fa-<%= icon %> <%= color %>"></i>
+          <span class="ml-2 <%= color %>"><%= complaint.status %> </span>
+        </div>
+        <div class="col-1 delete-complaint center">
+          <i id="delete-complaint" class="fas fa-times"></i>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+
+  
+  <form id="complaint-form" class="complaint-form hide" isUpdate="false">
     <div class="form-group">
       <input class="form-control" type="text" name="title" placeholder="Your complaint in short">
     </div>
@@ -21,5 +69,10 @@
         <button class="btn btn-outline-primary btn-cancel">Cancel</button>
     </div>
   </form>
+
+
 </div>
+
+
+<%- include("partials/alert-popup") -%>
 <%- include("partials/loading") -%>

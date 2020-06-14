@@ -22,8 +22,8 @@ exports.findAllRows = function(Collection, callback) {
   });
 }
 
-exports.findAndSortRows = function(Collection, sortObj ,callback) {
-  Collection.find().sort(sortObj).exec(function(err, rows) {
+exports.findAndSortRows = function(Collection, condition, sortObj ,callback) {
+  Collection.find(condition).sort(sortObj).exec(function(err, rows) {
     if(err) {
       console.log(err);
     }

@@ -6,7 +6,6 @@ const multer  = require("multer");
 const mime = require("mime");
 const https = require("https");
 const $ = require("jquery")
-// const FroalaEditor = require(__dirname + "/node_modules/froala-editor/lib/froalaEditor.js");
 const model = require(__dirname + "/model.js");
 const db = require(__dirname + "/database.js");
 const util = require(__dirname + "/util.js");
@@ -75,27 +74,29 @@ app.get("/forums", util.redirectLogin, async function(req, res) {
   renderForums(req, res, await util.getTemplate(req));
 });
 
-app.get("/forum/compose", util.redirectLogin, function(req, res) {
+app.get("/composeForum", util.redirectLogin, function(req, res) {
   res.render(constants.COMPOSE);
 });
 
-app.post("/forum/uploadImage", upload.single("image"), function(req, res) {
+app.post("/uploadImgForum", upload.single("image"), function(req, res) {
   if(req.file != undefined) {
     let resObj = {"link": "/uploads/" + req.file.filename};
     res.send(resObj);
   }
 });
 
-app.post("/forum/deleteImage", function(req, res) {
+app.post("/deleteForumImg", function(req, res) {
   fs.unlinkSync(__dirname + "/public" + req.body.image);
   res.send({status: 200, msg: "success"});
 });
 
-app.post("/forums/delete", util.redirectLogin, function(req, res) {
+app.post("/deleteforum", util.redirectLogin, function(req, res) {
   db.deleteRow(collection.Forum, req.body, function(resp) {
     let images = req.body.images;
-    for(var i=0; i<images.length; i++) {
-      fs.unlinkSync(__dirname + "/public" + images[i]);
+    if(images != undefined) {
+      for(var i=0; i<images.length; i++) {
+        fs.unlinkSync(__dirname + "/public" + images[i]);
+      }
     }
     renderForums(req, res, constants.FORUMS);
   });
@@ -173,18 +174,37 @@ app.post("/like",  function(req, res) {
   });
 });
 
-app.get("/complaints", util.redirectLogin, function(req, res) {
-  db.findAllRows(collection.Complaint, async function(complaints) {
-    res.render(await util.getTemplate(req), await util.getTemplateObject(req, {"complaints": complaints}));
+app.get("/complaints", util.redirectLogin, async function(req, res) {
+  renderComplaints(req, res, await util.getTemplate(req));
+});
+
+app.post("/newComplaint", function(req, res) {
+    req.body.status = "Open";
+    req.body.flat_id = req.session.user_id;
+    req.body.date = new Date();
+    db.insertRow(collection.Complaint, req.body, function(complaint) {
+      renderComplaints(req, res, constants.COMPLAINTS);
+    });
+});
+
+app.get("/editComplaint", function(req, res) {
+  db.findRow(collection.Complaint, req.query, function(complaint) {
+    res.send(complaint);
   });
 });
 
-app.post("/newcomplaint", function(req, res) {
-    req.body.status = "Open";
-    req.body.flat_id = req.session.user_id;
-    db.insertRow(collection.Complaint, req.body, function(complaint) {
-      res.send(complaint);
-    });
+app.post("/updateComplaint", function(req, res) {
+  let complaintId = req.body.complaintId;
+  delete req.body.complaintId;
+  db.findAndUpdateRow(collection.Complaint, {"_id": complaintId}, req.body, function(complaint) {
+    renderComplaints(req, res, constants.COMPLAINTS);
+  });
+});
+
+app.post("/deleteComplaint", function(req, res){
+  db.deleteRow(collection.Complaint, req.body, function(response) {
+    renderComplaints(req, res, constants.COMPLAINTS);
+  });
 });
 
 app.get("/contacts",  util.redirectLogin,  function(req,res) {
@@ -234,11 +254,19 @@ app.post("/logout", function(req, res) {
 
 function renderForums(req, res, render)
 {
-  db.findAndSortRows(collection.Forum, {"date": -1}, async function(forums) {
+  db.findAndSortRows(collection.Forum, {}, {"date": -1}, async function(forums) {
     let forumsObj = await util.getForumsObject(forums);
     res.render(render, await util.getTemplateObject(req, {"forums" : forumsObj}));
   });
 }
+
+function renderComplaints(req, res, render)
+{
+  db.findAndSortRows(collection.Complaint, {"flat_id": req.session.user_id}, {"date": -1}, async function(complaints) {
+    res.render(render, await util.getTemplateObject(req, {"complaints" : complaints}));
+  });
+}
+
 
 let port = process.env.PORT;
 if (port == null || port == "") {

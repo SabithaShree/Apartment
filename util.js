@@ -12,7 +12,7 @@ const Forum = model.Forum();
 const Complaint = model.Complaint();
 
 global.constants = Object.freeze({
-  "WELCOME": "welcome",
+  "USER": "user",
   "HOME": "home",
   "PROFILE": "profile",
   "MAINTANANCE": "maintanance",
@@ -84,7 +84,7 @@ exports.getTemplate =  function(req)
     let url = req.url;
     url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
     url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url;
-    let template = isAjax ? url : constants.WELCOME;
+    let template = isAjax ? url : constants.USER;
     resolve(template);
   });
 }

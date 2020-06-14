@@ -29,7 +29,7 @@ class Forum
 
     $(forums).on("click", "#compose", function() {
       $.ajax({
-        url: "/forum/compose",
+        url: "/composeForum",
         method: "GET",
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
@@ -125,7 +125,7 @@ class Forum
         let images = $(".forum-body").find("img").map(function() { return $(this).attr("src"); }).get();
 
         $.ajax({
-          url: "/forums/delete",
+          url: "/deleteforum",
           method: "POST",
           beforeSend: showStatus("Deleting..."),
           data: {
@@ -136,6 +136,7 @@ class Forum
             $("#alert-popup").modal("hide");
             $("body").removeClass("modal-open");
             $(".modal-backdrop").remove();
+            window.history.pushState("Apartment", "StepsStone Ananthaya", "/forums");
             $("#rightpane").html(res);
             hideStatus();
           }
@@ -149,13 +150,13 @@ class Forum
       let forumHtml = $(".forum-body").html();
       let forumTitle = $(".forum-title").text();
       $.ajax({
-        url: "/forum/compose",
+        url: "/composeForum",
         method: "GET",
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
           $("#rightpane").html(res);
           var editor = new FroalaEditor("#richtext-editor",{
-            imageUploadURL: "/forum/uploadImage",
+            imageUploadURL: "/uploadImgForum",
             imageUploadParam: "image"
           },
           function() {
@@ -225,7 +226,7 @@ class Compose {
     editor.opts.events["image.removed"] = function ($img) {
       console.log($img);
       $.ajax({
-        url: "/forum/deleteImage",
+        url: "/deleteForumImg",
         method: "POST",
         data: {
           image: $img.attr("src")

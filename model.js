@@ -21,7 +21,8 @@ exports.Flat = function()
     phone : Number,
     email : String,
     family : Number,
-    vehicles : {car : String, bike : String},
+    twowheeler : String,
+    fourwheeler : String,
     photo : String
   });
   return mongoose.model("Flat", flatSchema);
@@ -65,6 +66,7 @@ exports.Complaint = function()
     flat_id: String,
     title: String,
     description: String,
+    date: Date,
     status: {
       type: String,
       enum: ["Open", "In-progress", "Close"]
