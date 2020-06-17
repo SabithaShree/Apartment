@@ -1,0 +1,28 @@
+.vehicles-search-container {
+    padding: 8%;
+}
+
+.vehicles-search-form {
+    padding: 10% 0;;
+}
+
+.vehicle-search {
+    width: 60%;
+}
+
+.vehicle-search-result {
+    width: 60%;
+}
+
+.vehicle-type-label {
+    font-weight: 500;
+}
+
+.vehicle-search-result .card-img-top {
+    padding: 2%;
+}
+
+.no-results-img {
+    width: 100%;
+    height: auto;
+}

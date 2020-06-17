@@ -174,6 +174,19 @@ app.post("/like",  function(req, res) {
   });
 });
 
+app.get("/vehicles", util.redirectLogin, async function(req, res) {
+  res.render(await util.getTemplate(req), await util.getTemplateObject(req, {}));
+});
+
+app.get("/searchVehicle", util.redirectLogin, function(req, res) {
+  let vehicleNo = req.query.vehicleNo;
+  let vehicleType = req.query.vehicleType;
+  let conditionObj = {[vehicleType] : {$regex: ".*" + [vehicleNo] + ".*"}};
+  db.findRow(collection.Flat, conditionObj, function(flat) {
+    res.send(flat);
+  });
+});
+
 app.get("/complaints", util.redirectLogin, async function(req, res) {
   renderComplaints(req, res, await util.getTemplate(req));
 });

@@ -1,0 +1,53 @@
+<script>
+    $(document).ready(function() {
+      let vehicle = new Vehicle();
+      vehicle.registerEvents($("#vehicles-search-container"));
+    });
+</script>
+<div id="vehicles-search-container" class="vehicles-search-container container-fluid">
+    <div class="row">
+        <div class="col-md-7">
+            <form id="vehicles-search-form" class="vehicles-search-form center">
+                <div class="input-group form-group vehicle-search center">
+                    <input type="text" name="vehicleNo" class="form-control" placeholder="Eg: TN10A 1234">
+                    <div class="input-group-append">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    </div>
+                </div>
+                <div class="form-group form-group mt-5">
+                    <label class="vehicle-type-label">Vehicle Type : </label>
+                    <div class="form-check  form-check-inline ml-3">
+                        <input class="form-check-input" type="radio" name="vehicleType" id="twowheeler" value="twowheeler" checked>
+                        <label class="form-check-label" for="twowheeler">2 wheeler</label>
+                    </div>
+                    <div class="form-check form-check-inline ml-3">
+                        <input class="form-check-input" type="radio" name="vehicleType" id="fourwheeler" value="fourwheeler">
+                        <label class="form-check-label" for="fourwheeler">4 wheeler</label>
+                    </div>
+                </div>
+                <div class="form-group text-center mt-5">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                    <button class="btn btn-outline-primary btn-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div id="vehicle-search-result" class="col-md-5">
+            <div id="search-result" class="vehicle-search-result center hide">
+                <div class="card">
+                    <img id="vehicle-owner" class="card-img-top" src="" alt="Vehicle Owner">
+                    <div class="card-body">
+                      <p id="vehicle-owner-name" class="card-text"></p>
+                       <p id="vehicle-owner-phone" class="card-text"></p>
+                    </div>
+                 </div>
+            </div>
+             <div class="hide" id="no-results">
+                 <img class="no-results-img" src="/images/no-results.png" alt="no results">
+             </div>
+        </div>
+          
+    </div>
+</div>
+
+
+<%- include("partials/loading") -%>

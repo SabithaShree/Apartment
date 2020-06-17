@@ -22,7 +22,8 @@ global.constants = Object.freeze({
   "EXPENSES": "expenses",
   "FORUM": "forum",
   "COMPOSE": "compose",
-  "COMPLAINTS": "complaints"
+  "COMPLAINTS": "complaints",
+  "VEHICLES": "vehicles"
 });
 
 

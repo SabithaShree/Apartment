@@ -224,7 +224,6 @@ class Compose {
 
   registerEditorEvents(editor) {
     editor.opts.events["image.removed"] = function ($img) {
-      console.log($img);
       $.ajax({
         url: "/deleteForumImg",
         method: "POST",

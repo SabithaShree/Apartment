@@ -43,7 +43,7 @@
         <div class="col-2 complaint-status">
           <% let status = complaint.status;
              let icon = (status == "Open") ? "lock-open" : (status == "Close") ? "lock" : "hourglass-half";
-             let color = (status == "Open") ? "green" : (status == "Close") ? "red" : "blue";
+             let color = (status == "Open") ? "red" : (status == "Close") ? "green" : "blue";
           %>
           <i class="fas fa-<%= icon %> <%= color %>"></i>
           <span class="ml-2 <%= color %>"><%= complaint.status %> </span>

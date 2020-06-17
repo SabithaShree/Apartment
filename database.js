@@ -22,6 +22,17 @@ exports.findAllRows = function(Collection, callback) {
   });
 }
 
+exports.findAllRows = function(Collection, fields, callback) {
+  Collection.find({}, fields, function(err, rows) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      callback(rows);
+    }
+  });
+}
+
 exports.findAndSortRows = function(Collection, condition, sortObj ,callback) {
   Collection.find(condition).sort(sortObj).exec(function(err, rows) {
     if(err) {
