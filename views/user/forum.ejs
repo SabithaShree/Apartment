@@ -6,6 +6,8 @@
   });
 </script>
 <div id="forum-container" forum_id="<%= _id %>" class="forum-container container-fluid">
+  <i id="go-back" class="more-options fas fa-arrow-left ml-4"></i>
+
   <% let flag = (user_id == author_id) ? "" : "hide"; %>
   <i id="more-options" class="more-options fas fa-ellipsis-h <%= flag %>"></i>
   <div class="dropdown">
@@ -99,5 +101,5 @@
   </div>
 
 </div>
-<%- include("partials/alert-popup") -%>
-<%- include("partials/loading") -%>
+<%- include("../partials/alert-popup") -%>
+<%- include("../partials/loading") -%>

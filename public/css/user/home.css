@@ -42,8 +42,7 @@ hr {
 }
 
 .profile-body {
-  background-color: #fff0e6;
-  background-image: linear-gradient(0, transparent, #f0f0f0, transparent);
+  background-image: linear-gradient(to bottom, #ffccb3, #ffddcc, #ffeee6, #ffddcc, #ffccb3);
   min-height: 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -94,7 +93,8 @@ hr {
 }
 
 .menu-options li {
-  padding: 6% 10%;
+  margin: 4% 0;
+  padding: 2% 10%;
 }
 
 .menu-options li i {
@@ -106,8 +106,13 @@ hr {
 }
 
 .menu-option:hover, .menu-option.active  {
-  background-color: #ffe0cc;
+  color: white;
+  background-image: linear-gradient(to bottom, #ff9966, #ffaa80,  #ff9966);
   border-radius: 10%;
+}
+
+.menu-option:hover *, .menu-option.active * {
+  color: white;
 }
 
 .apt-title {

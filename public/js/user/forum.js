@@ -21,7 +21,7 @@ class Forum
         success: function(res, status, xhr) {
           hideLoading();
           window.history.pushState("Apartment", "StepsStone Ananthaya", reqUrl);
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           window.scrollTo(0, 0);
         }
       });
@@ -34,7 +34,7 @@ class Forum
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
           hideLoading();
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
@@ -56,7 +56,7 @@ class Forum
           var shown = $(likebutton).find("i:not('.hide')");
           $(hidden).removeClass("hide");
           $(shown).addClass("hide");
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
@@ -81,7 +81,7 @@ class Forum
           "forum_id": forum_id
         },
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
@@ -105,14 +105,18 @@ class Forum
             $("#alert-popup").modal("hide");
             $("body").removeClass("modal-open");
             $(".modal-backdrop").remove();
-            $("#rightpane").html(res);
+            $("#right-pane").html(res);
           }
         });
       });
     });
 
     $(forum).on("click", "#more-options", function() {
-      $("#more-options-menu").show();
+      $(forum).find("#more-options-menu").show();
+    });
+
+    $(forum).on("click", "#go-back", function() {
+      $("#left-pane").find("li[name='/forums']").trigger("click");
     });
 
     $(forum).on("click", "#delete-forum", function(e) {
@@ -137,7 +141,7 @@ class Forum
             $("body").removeClass("modal-open");
             $(".modal-backdrop").remove();
             window.history.pushState("Apartment", "StepsStone Ananthaya", "/forums");
-            $("#rightpane").html(res);
+            $("#right-pane").html(res);
             hideStatus();
           }
         });
@@ -154,7 +158,7 @@ class Forum
         method: "GET",
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           var editor = new FroalaEditor("#richtext-editor",{
             imageUploadURL: "/uploadImgForum",
             imageUploadParam: "image"
@@ -186,7 +190,7 @@ class Compose {
         method: "GET",
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           hideLoading();
         }
       });
@@ -200,7 +204,7 @@ class Compose {
         data: $("#newforum-form").serialize(),
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           hideLoading();
         }
       });
@@ -215,7 +219,7 @@ class Compose {
         data: $("#updateforum-form").serialize() + "&forum_id=" + forum_id,
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           hideLoading();
         }
       });

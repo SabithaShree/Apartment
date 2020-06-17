@@ -38,7 +38,7 @@ class Vehicle
               method: "GET",
               beforeSend: showLoading(),
               success: function(res, status, xhr) {
-                $("#rightpane").html(res);
+                $("#right-pane").html(res);
                 hideLoading();
               }
             });

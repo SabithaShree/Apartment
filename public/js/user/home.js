@@ -12,16 +12,16 @@
 
 class Home
 {
-  registerEvents(home)
+  registerLeftPaneEvents(leftpane)
   {
 
-    $(home).ready(function() {
+    $(leftpane).ready(function() {
       $(".menu-option").removeClass("active");
-      let activeMenu = $("#rightpane").attr("name");
+      let activeMenu = $("#right-pane").attr("name");
       $("li.menu-option." + activeMenu).addClass("active");
     });
 
-    $(home).on("click", ".menu-option:not('.logout')", function() {
+    $(leftpane).on("click", ".menu-option:not('.logout')", function() {
       $(this).siblings().removeClass("active");
       $(this).addClass("active");
 
@@ -33,12 +33,12 @@ class Home
         success : function(res, status, xhr) {
           hideLoading();
           window.history.pushState("Apartment", "StepsStone Ananthaya", requrl);
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
 
-    $(home).on("click", "#logout",  function() {
+    $(leftpane).on("click", "#logout",  function() {
       $.post("/logout" , function() {
         window.location.href = "/";
       });

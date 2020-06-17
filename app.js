@@ -50,7 +50,15 @@ app.post("/login",  function(req, res) {
     if(password === user.password) {
       req.session.user_id = username;
       req.session.save();
-      res.redirect("/home");
+      if(username == "admin"){
+        res.redirect("/adminHome")
+      }
+      else if(username == "security") {
+
+      }
+      else {
+        res.redirect("/home");
+      }
     }
     else {
       res.redirect("/");
@@ -70,12 +78,17 @@ app.get("/maintanance", util.redirectLogin, async function(req, res) {
   res.render(await util.getTemplate(req),  await util.getTemplateObject(req, {}));
 });
 
+app.get("/expenses", util.redirectLogin, async function(req, res) {
+  res.render(await util.getTemplate(req),  await util.getTemplateObject(req, {}));
+});
+
+
 app.get("/forums", util.redirectLogin, async function(req, res) {
   renderForums(req, res, await util.getTemplate(req));
 });
 
 app.get("/composeForum", util.redirectLogin, function(req, res) {
-  res.render(constants.COMPOSE);
+  res.render( "user/" + constants.COMPOSE);
 });
 
 app.post("/uploadImgForum", upload.single("image"), function(req, res) {
@@ -98,7 +111,7 @@ app.post("/deleteforum", util.redirectLogin, function(req, res) {
         fs.unlinkSync(__dirname + "/public" + images[i]);
       }
     }
-    renderForums(req, res, constants.FORUMS);
+    renderForums(req, res, "user/"+ constants.FORUMS);
   });
 });
 
@@ -118,7 +131,7 @@ app.post("/newforum", function(req, res) {
      "date" : new Date()
    });
   db.insertRow(collection.Forum, forumObj, function(response) {
-    renderForums(req, res, constants.FORUMS);
+    renderForums(req, res, "user/"+  constants.FORUMS);
   });
 });
 
@@ -128,7 +141,7 @@ app.post("/updateforum", function(req, res) {
     "content" : req.body.content
   };
   db.findAndUpdateRow(collection.Forum, {"_id": req.body.forum_id}, newData, function(forum) {
-    renderForums(req, res, constants.FORUMS);
+    renderForums(req, res, "user/"+  constants.FORUMS);
   });
 });
 
@@ -141,7 +154,7 @@ app.post("/comment", function(req, res) {
     });
     db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
       let forumObj = await util.getForumObject(forum);
-      res.render(constants.FORUM , forumObj);
+      res.render("user/" + constants.FORUM , forumObj);
     });
   });
 });
@@ -151,7 +164,7 @@ app.post("/deletecomment", function(req, res) {
     forum.comments = forum.comments.filter((comment) => comment._id != req.body.comment_id);
     db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
       let forumObj = await util.getForumObject(forum);
-      res.render(constants.FORUM , forumObj);
+      res.render("user/" + constants.FORUM , forumObj);
     });
   });
 });
@@ -169,7 +182,7 @@ app.post("/like",  function(req, res) {
     }
     db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
       let forumObj = await util.getForumObject(forum);
-      res.render(constants.FORUM , forumObj);
+      res.render("user/" + constants.FORUM , forumObj);
     });
   });
 });
@@ -196,7 +209,7 @@ app.post("/newComplaint", function(req, res) {
     req.body.flat_id = req.session.user_id;
     req.body.date = new Date();
     db.insertRow(collection.Complaint, req.body, function(complaint) {
-      renderComplaints(req, res, constants.COMPLAINTS);
+      renderComplaints(req, res, "user/" +  constants.COMPLAINTS);
     });
 });
 
@@ -210,13 +223,13 @@ app.post("/updateComplaint", function(req, res) {
   let complaintId = req.body.complaintId;
   delete req.body.complaintId;
   db.findAndUpdateRow(collection.Complaint, {"_id": complaintId}, req.body, function(complaint) {
-    renderComplaints(req, res, constants.COMPLAINTS);
+    renderComplaints(req, res, "user/" +  constants.COMPLAINTS);
   });
 });
 
 app.post("/deleteComplaint", function(req, res){
   db.deleteRow(collection.Complaint, req.body, function(response) {
-    renderComplaints(req, res, constants.COMPLAINTS);
+    renderComplaints(req, res, "user/" + constants.COMPLAINTS);
   });
 });
 
@@ -239,7 +252,7 @@ app.post("/updateProfile", upload.single("photo"), function(req, res) {
   }
   db.findAndUpdateRow(collection.Flat, {"flat_id": req.session.user_id}, req.body , function(flat) {
     flat.template = constants.HOME;
-    res.render(constants.HOME, flat)
+    res.render("user/" + constants.HOME, flat)
   });
 });
 

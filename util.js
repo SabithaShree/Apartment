@@ -86,7 +86,7 @@ exports.getTemplate =  function(req)
     url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
     url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url;
     let template = isAjax ? url : constants.USER;
-    resolve(template);
+    resolve("user/" + template);
   });
 }
 

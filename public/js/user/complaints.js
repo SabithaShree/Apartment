@@ -26,7 +26,7 @@ class Complaint
         data: data,
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           hideLoading();
         }
       });
@@ -39,7 +39,7 @@ class Complaint
         method: "GET",
         beforeSend: showLoading(),
         success: function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
           hideLoading();
         }
       });
@@ -83,7 +83,7 @@ class Complaint
             $("body").removeClass("modal-open");
             $(".modal-backdrop").remove();
             hideStatus();
-            $("#rightpane").html(res);
+            $("#right-pane").html(res);
             window.history.pushState("Apartment", "StepsStone Ananthaya", "/complaints");
           }
         });

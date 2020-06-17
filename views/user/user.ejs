@@ -1,22 +1,22 @@
-<%- include("partials/home-header") -%>
+<%- include("../partials/home-header") -%>
 
 <script>
   $(document).ready(function() {
     var home = new Home();
-    home.registerEvents($("#main-container"));
+    home.registerLeftPaneEvents($("#left-pane"));
   });
 </script>
 
 <div id="main-container" class="main-container full-height">
   <!-- <i id="toggler-menu" class="toggler-icon fas fa-bars"></i> -->
   <div class="row full-height">
-    <div class="col-md-3 col-sm-0 left-pane">
+    <div id="left-pane" class="col-md-3 col-sm-0 left-pane">
       <div class="position-fixed">
         <ul class="menu-options">
           <li class="apt-title"><img class="leftpane-logo" src="/images/stepsstone-logo.png" alt="Logo">Ananthaya</li>
           <li class="menu-option home active" name="/home"><i class="fas fa-home"></i>Home</li>
           <li class="menu-option maintanance" name="/maintanance"><i class="fas fa-rupee-sign"></i>Maintance</li>
-          <li class="menu-option home" name="/home"><i class="fas fa-money-check"></i>Common Expenses</li>
+          <li class="menu-option expenses" name="/expenses"><i class="fas fa-money-check"></i>Common Expenses</li>
           <li class="menu-option forums forum" name="/forums"><i class="fab fa-wpforms"></i>Forums</li>
           <li class="menu-option vehicles" name="/vehicles"><i class="fas fa-search"></i>Vehicle Search</li>
           <li class="menu-option complaints" name="/complaints"><i class="fas fa-tools"></i>Complaints</li>
@@ -26,10 +26,10 @@
         </ul>
       </div>
     </div>
-    <div id="rightpane" name="<%= template %>" class="col-md-9 col-sm-12 profile-body">
+    <div id="right-pane" name="<%= template %>" class="col-md-9 col-sm-12 profile-body">
       <%- include(template) -%>
     </div>
   </div>
 </div>
 
-<%- include("partials/footer") -%>
+<%- include("../partials/footer") -%>

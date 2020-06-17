@@ -22,7 +22,7 @@ exports.findAllRows = function(Collection, callback) {
   });
 }
 
-exports.findAllRows = function(Collection, fields, callback) {
+exports.findAllRowsWithFields = function(Collection, fields, callback) {
   Collection.find({}, fields, function(err, rows) {
     if(err) {
       console.log(err);

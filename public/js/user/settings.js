@@ -17,7 +17,7 @@ class Settings
         url : "/home",
         method : "GET",
         success : function(res, status, xhr) {
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
@@ -34,7 +34,7 @@ class Settings
         beforeSend : showStatus("Updating..."),
         success : function(res, status, xhr) {
           hideStatus();
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
@@ -49,7 +49,7 @@ class Settings
         beforeSend : showStatus("Updating..."),
         success : function(res, status, xhr) {
           hideStatus();
-          $("#rightpane").html(res);
+          $("#right-pane").html(res);
         }
       });
     });
