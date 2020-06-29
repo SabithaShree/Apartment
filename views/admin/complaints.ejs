@@ -1,0 +1,53 @@
+<script>
+    $(document).ready(function() {
+      var complaint = new Complaint();
+      complaint.registerEvents("#complaints-container");
+    });
+  </script>
+  <div id="complaints-container" class="complaints-container container-fluid">
+  
+    <%
+      function getDateStr(date)
+      {
+        const months = [
+              "January", "February", "March", "April", "May", "June", "July",
+              "August", "September", "October", "November", "December"];
+  
+          const dateStr = months[date.getMonth()] + " " + date.getDate();
+          return dateStr;
+      }
+    %>
+    
+    <% let noComplaints = (complaints.length ==0 ) ? "" : "hide"; %>
+    <div id="no-complaints" class="center <%= noComplaints %>">
+      <img src="/images/complaint.jpg" alt="complaint" class="block center">
+    </div>
+    
+    <% let listComplaints = (complaints.length ==0 ) ? "hide" : ""; %>
+    <div id="complaints" class="<%= listComplaints %>">
+      <% complaints.forEach((complaint) => { %>
+        <div id="<%= complaint._id %>" class="row complaint no-gutters">
+          <div class="col-1 complaint-flat">
+            <%= complaint.flat_id %>
+          </div>
+          <div class="col-7 complaint-title pl-3 pr-3">
+            <%= complaint.description %>
+          </div>
+          <div class="col-2 complaint-date">
+            <%= getDateStr(complaint.date) %>
+          </div>
+          <div class="col-2 complaint-status">
+            <% let status = complaint.status;
+               let icon = (status == "Open") ? "lock-open" : (status == "Close") ? "lock" : "hourglass-half";
+               let color = (status == "Open") ? "red" : (status == "Close") ? "green" : "blue";
+            %>
+            <i class="fas fa-<%= icon %> <%= color %>"></i>
+            <span class="<%= color %>"><%= complaint.status %> </span>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+  
+  <%- include("../partials/loading") -%>
+  

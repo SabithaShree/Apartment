@@ -34,15 +34,7 @@ class Complaint
 
     $(complaint).on("click", ".btn-cancel", function(e) {
       e.preventDefault();
-      $.ajax({
-        url: "/complaints",
-        method: "GET",
-        beforeSend: showLoading(),
-        success: function(res, status, xhr) {
-          $("#right-pane").html(res);
-          hideLoading();
-        }
-      });
+      $("#left-pane").find("li[name='/complaints']").trigger("click");
     });
 
     $(complaint).on("click", ".complaint-title", function(e) {

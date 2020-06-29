@@ -33,15 +33,7 @@ class Vehicle
 
         $(vehicle).on("click", ".btn-cancel", function(e) {
             e.preventDefault();
-            $.ajax({
-              url: "/vehicles",
-              method: "GET",
-              beforeSend: showLoading(),
-              success: function(res, status, xhr) {
-                $("#right-pane").html(res);
-                hideLoading();
-              }
-            });
+            $("#left-pane").find("li[name='/vehicles']").trigger("click");
           });
     }
 }

@@ -12,14 +12,10 @@ class Settings
     });
 
 
-    $(settings).on("click", ".btn-cancel", function() {
-      $.ajax({
-        url : "/home",
-        method : "GET",
-        success : function(res, status, xhr) {
-          $("#right-pane").html(res);
-        }
-      });
+    $(settings).on("click", ".btn-cancel", function(e) {
+      e.preventDefault();
+      $("#left-pane").find("li[name='/home']").trigger("click");
+
     });
 
     $(settings).on("submit", ".updateprofile-form", function(e) {

@@ -11,6 +11,17 @@ exports.insertRow =  function(Collection, data, callback) {
   });
 }
 
+exports.insertMany = function(Collection, data, callback) {
+  Collection.insertMany(data, function(err, docs) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      callback(docs);
+    }
+  });
+}
+
 exports.findAllRows = function(Collection, callback) {
   Collection.find(function(err, rows) {
     if(err) {
@@ -87,3 +98,14 @@ exports.deleteRow = function(Collection, condition, callback) {
     }
   });
 }
+
+  exports.deleteAllRows = function(Collection, callback) {
+    Collection.deleteMany({}, function(err, deleteddata){
+      if(err) {
+        console.log(err);
+      }
+      else {
+        callback(deleteddata);
+      }
+    });
+  }

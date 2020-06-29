@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const cors = require('cors')
 const fs = require("fs");
 const multer  = require("multer");
 const mime = require("mime");
@@ -14,6 +15,7 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+app.use(cors());
 app.use("/jquery-autogrow-textarea",express.static(__dirname + "/node_modules/jquery-autogrow-textarea"));
 app.use("/froala-editor", express.static(__dirname + "/node_modules/froala-editor"));
 let storage = multer.diskStorage({
@@ -50,15 +52,16 @@ app.post("/login",  function(req, res) {
     if(password === user.password) {
       req.session.user_id = username;
       req.session.save();
-      if(username == "admin"){
-        res.redirect("/adminHome")
-      }
-      else if(username == "security") {
 
-      }
-      else {
-        res.redirect("/home");
-      }
+        if(username == "admin"){
+          res.redirect("/admin/flats")
+        }
+        else if(username == "security") {
+  
+        }
+        else {
+          res.redirect("/home");
+        }
     }
     else {
       res.redirect("/");
@@ -66,28 +69,97 @@ app.post("/login",  function(req, res) {
   });
 });
 
-app.get("/home", util.redirectLogin, function(req, res) {
-  db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, async function(flat) {
-    req.session.user_name = flat.name;
-    req.session.user_photo = flat.photo;
-    res.render(await util.getTemplate(req),  await util.getTemplateObject(req, flat));
+
+app.get("/admin/flats", util.checkLogin, function(req, res) {
+  db.findAllRows(collection.Flat, async function(flats) {
+    let flatsObj = {"Block 1" : [], "Block 2": []};
+    for(var i=0; i<flats.length; i++)
+    {
+      let flat = flats[i];
+      let block = flat.flat_id.startsWith("B1") ? "Block 1" : "Block 2";
+      flat.flat_id = flat.flat_id.slice(2);
+      flatsObj[block].push(flat);
+      if(i == flats.length-1)
+      {
+        let retObj = {};
+        retObj.template = "flats";
+        retObj.flats = flatsObj;
+        res.render(
+          await util.getRender(req, constants.ADMIN) , 
+          await util.getTemplateObject(req, {"flats" : flatsObj}, constants.ADMIN)
+        );
+      }
+    }
   });
 });
 
-app.get("/maintanance", util.redirectLogin, async function(req, res) {
-  res.render(await util.getTemplate(req),  await util.getTemplateObject(req, {}));
+app.get("/admin/complaints", util.checkLogin, function(req, res) {
+  db.findAndSortRows(collection.Complaint, {}, {"date": -1}, async function(complaints) {
+    res.render(
+      await util.getRender(req, constants.ADMIN) , 
+      await util.getTemplateObject(req, {"complaints" : complaints}, constants.ADMIN)
+    );
+  });
 });
 
-app.get("/expenses", util.redirectLogin, async function(req, res) {
-  res.render(await util.getTemplate(req),  await util.getTemplateObject(req, {}));
+app.get("/admin/association", util.checkLogin, function(req, res) {
+  db.findAllRows(collection.Association, async function(association) {
+    res.render(
+      await util.getRender(req, constants.ADMIN) ,
+      await util.getTemplateObject(req, {"association" : association}, constants.ADMIN)
+    );
+  });
+});
+
+app.post("/updateAssociation", function(req, res) {
+  db.deleteAllRows(collection.Association, function() {
+    db.insertMany(collection.Association, req.body.association, async function(association){
+      res.render(
+        "admin/" + constants.ASSOCIATION,
+        await util.getTemplateObject(req, {"association" : association}, constants.ADMIN)
+      );
+    });
+  })
+});
+
+app.get("/getFlats", util.checkLogin, function(req, res) {
+  db.findAllRows(collection.Flat, async function(flats) {
+    res.send(flats);
+  });
 });
 
 
-app.get("/forums", util.redirectLogin, async function(req, res) {
-  renderForums(req, res, await util.getTemplate(req));
+app.get("/home", util.checkLogin, function(req, res) {
+  db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, async function(flat) {
+    req.session.user_name = flat.name;
+    req.session.user_photo = flat.photo;
+    res.render(
+      await util.getRender(req, constants.USER),  
+      await util.getTemplateObject(req, flat, constants.USER)
+    );
+  });
 });
 
-app.get("/composeForum", util.redirectLogin, function(req, res) {
+app.get("/maintanance", util.checkLogin, async function(req, res) {
+  res.render(
+    await util.getRender(req, constants.USER),  
+    await util.getTemplateObject(req, {}, constants.USER)
+  );
+});
+
+app.get("/expenses", util.checkLogin, async function(req, res) {
+  res.render(
+    await util.getRender(req, constants.USER),  
+    await util.getTemplateObject(req, {}, constants.USER)
+  );
+});
+
+
+app.get("/forums", util.checkLogin, async function(req, res) {
+  renderForums(req, res, await util.getRender(req, constants.USER));
+});
+
+app.get("/composeForum", util.checkLogin, function(req, res) {
   res.render( "user/" + constants.COMPOSE);
 });
 
@@ -103,7 +175,7 @@ app.post("/deleteForumImg", function(req, res) {
   res.send({status: 200, msg: "success"});
 });
 
-app.post("/deleteforum", util.redirectLogin, function(req, res) {
+app.post("/deleteforum", util.checkLogin, function(req, res) {
   db.deleteRow(collection.Forum, req.body, function(resp) {
     let images = req.body.images;
     if(images != undefined) {
@@ -115,10 +187,13 @@ app.post("/deleteforum", util.redirectLogin, function(req, res) {
   });
 });
 
-app.get("/forum/:forum_id", util.redirectLogin, function(req, res) {
+app.get("/forum/:forum_id", util.checkLogin, function(req, res) {
   db.findRow(collection.Forum, {"_id": req.params.forum_id}, async function(forum) {
     let forumObj = await util.getForumObject(forum);
-    res.render(await util.getTemplate(req) , await util.getTemplateObject(req, forumObj));
+    res.render(
+      await util.getRender(req, constants.USER) , 
+      await util.getTemplateObject(req, forumObj, constants.USER)
+    );
   });
 });
 
@@ -187,11 +262,14 @@ app.post("/like",  function(req, res) {
   });
 });
 
-app.get("/vehicles", util.redirectLogin, async function(req, res) {
-  res.render(await util.getTemplate(req), await util.getTemplateObject(req, {}));
+app.get("/vehicles", util.checkLogin, async function(req, res) {
+  res.render(
+    await util.getRender(req, constants.USER), 
+    await util.getTemplateObject(req, {}, constants.USER)
+  );
 });
 
-app.get("/searchVehicle", util.redirectLogin, function(req, res) {
+app.get("/searchVehicle", util.checkLogin, function(req, res) {
   let vehicleNo = req.query.vehicleNo;
   let vehicleType = req.query.vehicleType;
   let conditionObj = {[vehicleType] : {$regex: ".*" + [vehicleNo] + ".*"}};
@@ -200,8 +278,8 @@ app.get("/searchVehicle", util.redirectLogin, function(req, res) {
   });
 });
 
-app.get("/complaints", util.redirectLogin, async function(req, res) {
-  renderComplaints(req, res, await util.getTemplate(req));
+app.get("/complaints", util.checkLogin, async function(req, res) {
+  renderComplaints(req, res, await util.getRender(req, constants.USER));
 });
 
 app.post("/newComplaint", function(req, res) {
@@ -233,15 +311,21 @@ app.post("/deleteComplaint", function(req, res){
   });
 });
 
-app.get("/contacts",  util.redirectLogin,  function(req,res) {
-  db.findAllRows(collection.Contact, async function(contacts) {
-    res.render(await util.getTemplate(req) ,await util.getTemplateObject(req, {"contacts" : contacts}));
+app.get("/association",  util.checkLogin,  function(req,res) {
+  db.findAllRows(collection.Association, async function(association) {
+    res.render(
+      await util.getRender(req, constants.USER) ,
+      await util.getTemplateObject(req, {"association" : association}, constants.USER)
+    );
   });
 });
 
-app.get("/settings", util.redirectLogin,  function(req,res) {
+app.get("/settings", util.checkLogin,  function(req,res) {
   db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, async function(flat) {
-    res.render(await util.getTemplate(req) ,  await util.getTemplateObject(req, flat));
+    res.render(
+      await util.getRender(req, constants.USER) ,  
+      await util.getTemplateObject(req, flat, constants.USER)
+    );
   });
 });
 
@@ -252,19 +336,22 @@ app.post("/updateProfile", upload.single("photo"), function(req, res) {
   }
   db.findAndUpdateRow(collection.Flat, {"flat_id": req.session.user_id}, req.body , function(flat) {
     flat.template = constants.HOME;
-    res.render("user/" + constants.HOME, flat)
+    res.render("user/" + constants.HOME, flat);
   });
 });
 
 app.post("/updatePassword", function(req, res) {
   db.findRow(collection.User, {"username" : req.session.user_id}, function(user) {
     if(req.body.oldPassword === user.password) {
-      db.updateRow(collection.User, {"username" : req.session.user_id}, {"password": req.body.password}, function(updatedResult) {
-        res.redirect("/home");
+      db.findAndUpdateRow(collection.User, {"username" : req.session.user_id}, {"password": req.body.password}, function(user) {
+        db.findRow(collection.Flat, {"flat_id": req.session.user_id}, function(flat) {
+          flat.template = constants.HOME;
+          res.render("user/" + constants.HOME, flat);
+        });
       });
     }
     else {
-
+      res.send("Old password is incorrect. Please try again.");
     }
   });
 });
@@ -282,17 +369,22 @@ function renderForums(req, res, render)
 {
   db.findAndSortRows(collection.Forum, {}, {"date": -1}, async function(forums) {
     let forumsObj = await util.getForumsObject(forums);
-    res.render(render, await util.getTemplateObject(req, {"forums" : forumsObj}));
+    res.render(
+      render, 
+      await util.getTemplateObject(req, {"forums" : forumsObj}, constants.USER)
+    );
   });
 }
 
 function renderComplaints(req, res, render)
 {
   db.findAndSortRows(collection.Complaint, {"flat_id": req.session.user_id}, {"date": -1}, async function(complaints) {
-    res.render(render, await util.getTemplateObject(req, {"complaints" : complaints}));
+    res.render(
+      render, 
+      await util.getTemplateObject(req, {"complaints" : complaints}, constants.USER)
+    );
   });
 }
-
 
 let port = process.env.PORT;
 if (port == null || port == "") {

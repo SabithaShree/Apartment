@@ -1,0 +1,67 @@
+<div id="flats-container" class="flats-container container-fluid">
+    <% for (var block in flats) {  %>
+        <h3 class="center block-title"><%= block.toUpperCase() %></h3>
+        <div class="row">
+            <% flats[block].forEach((flat) => { %>
+            <div class="col-3 flat-container">
+                <div class="flat center"
+                    block= "<%= block %>"
+                    flat_id="<%= flat.flat_id %>" 
+                    name="<%= flat.name %>" 
+                    photo="<%=flat.photo%>" 
+                    phone="<%= flat.phone %>"
+                    email="<%= flat.email %>" 
+                    family="<%= flat.family %>"
+                    fourwheeler="<%= flat.fourwheeler %>"
+                    twowheeler="<%= flat.twowheeler %>"
+                    family="<%= flat.family %>">
+                    <i class="fas fa-house-user"></i> 
+                    <span><%= flat.flat_id %></span>
+                </div>
+            </div>
+            <% }); %>
+    </div>
+    <% } %>
+
+    <div class="modal fade flat-details-popup" id="flatDetails" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-4">
+                      <img class="pro-photo" src="" alt="profile-photo">
+                    </div>
+                    <div class="flat-details col-8">
+                        <div class="flat-detail" name="phone">
+                            <i class="fas fa-phone-alt"></i>
+                            <span class="detail-value"></span>
+                        </div>
+                        <div class="flat-detail" name="email">
+                            <i class="fas fa-envelope"></i>
+                            <span class="detail-value"></span>
+                        </div>
+                        <div class="flat-detail" name="twowheeler">
+                            <i class="fas fa-motorcycle"></i>
+                            <span class="detail-value"></span>
+                        </div>
+                        <div class="flat-detail" name="fourwheeler">
+                            <i class="fas fa-car-side"></i>
+                            <span class="detail-value"></span>
+                        </div>
+                        <div class="flat-detail" name="family">
+                            <i class="fas fa-users"></i>
+                            <span class="detail-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>

@@ -185,15 +185,7 @@ class Compose {
   registerEvents(forum) {
     $(forum).on("click", ".btn-cancel", function(e) {
       e.preventDefault();
-      $.ajax({
-        url: "/forums",
-        method: "GET",
-        beforeSend: showLoading(),
-        success: function(res, status, xhr) {
-          $("#right-pane").html(res);
-          hideLoading();
-        }
-      });
+      $("#left-pane").find("li[name='/forums']").trigger("click");
     });
 
     $(forum).on("submit", "#newforum-form", function(e) {

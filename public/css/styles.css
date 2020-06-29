@@ -46,3 +46,62 @@ h1, h2 {
 .block {
   display: block;
 }
+
+.drop-down {
+  width: inherit;
+  background-color: white;
+  text-align: left;
+  position: absolute;
+  z-index: 5;
+  top: 2.5rem;
+}
+
+.drop-down-options {
+  list-style: none;
+  margin-bottom: 0;
+}
+
+.drop-down-options li {
+  padding: 2%;
+}
+
+.drop-down-options li:hover {
+  cursor: pointer;
+  background-color: oldlace;
+  border: 1px solid oldlace;
+}
+
+.multi-select {
+  text-align: left;
+  height: auto;
+  padding: 1%;
+}
+
+.multi-select .multi-select-option {
+  white-space: nowrap;
+  border: 0.5px solid lightcoral;
+  background-color: oldlace;
+  padding: 1% 1rem;
+  margin: 2%;
+  display: inline-block;
+  font-size: 1rem;
+}
+
+.multi-select .multi-select-option:hover {
+  background-color: floralwhite;
+}
+
+.multi-select .multi-select-option .remove-member {
+  font-size: 0.8rem;
+  padding-left: 1rem;
+}
+
+.multi-select .multi-select-option .remove-member:hover {
+  cursor: pointer;
+}
+
+
+
+.multi-select .nested-input {
+  padding: 1%;
+}

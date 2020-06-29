@@ -1,0 +1,83 @@
+<script>
+    $(document).ready(function() {
+        let association = new Association();
+        association.registerEvents($("#association-container"));
+    });
+</script>
+
+<div id="association-container" class="association-container container-fluid">
+  <div id="association-members-container">
+    <div id="edit-association" class="edit-association">
+      <i class="fas fa-user-edit"></i> Edit Association
+    </div>
+    <div class="row">
+        <% association.forEach((category) => { %>
+          
+          <% 
+            let gridClass = (category.title == "Other Members") ? "col other-members" : "col-4";
+            let otherClass = (category.title == "Other Members") ? " other-member" : "" 
+          %>
+
+          <div class="association-category <%= gridClass %>">
+            <h4 class="member-title"><%= category.title %></h4>
+              <% category.members.forEach((member) => { %>
+
+                <div id="<%= member %>" name="<%= category.title %>" class="association-member<%= otherClass %>">
+                    <img class="member-pic" src="/uploads/<%=locals.flats[member].photo %>" alt="">
+                    <p class="member-name"><%= locals.flats[member].name %></p>
+                    <p class="member-phone"><%= locals.flats[member].phone %></p>
+                </div>
+
+              <% }); %>
+          </div>
+        <% }); %>
+    </div>
+    
+  </div>
+  
+  <div class="hide" id="association-form-container">
+    <form id="association-form">
+      <div class="form-search-input center form-group row">
+          <label class="control-label col-3" for="name">Secretary</label>
+          <div class="col-9 input-group">
+            
+            <input type="text" class="form-control search-member" placeholder="Type to search" name="Secretary">
+              <i class="fas fa-search search-member-icon"></i>
+            </input>
+          </div>
+      </div>
+      <div class="form-search-input center form-group row">
+          <label class="control-label col-3" for="name">President</label>
+          <div class="col-9 input-group">
+            <input type="text" class="form-control search-member" placeholder="Type to search" name="President">
+              <i class="fas fa-search search-member-icon"></i>
+            </input>
+          </div>
+      </div>
+      <div class="form-search-input center form-group row">
+          <label class="control-label col-3" for="name">Treasurer</label>
+          <div class="col-9 input-group">
+            <input type="text" class="form-control search-member" placeholder="Type to search" name="Treasurer">
+              <i class="fas fa-search search-member-icon"></i>
+            </input>
+          </div>
+      </div>
+      <div class="form-search-input center form-group row">
+        <label class="control-label col-3" for="name">Association Members</label>
+        <div id="other-members" class="col-9 input-group form-control multi-select">
+            <div class="input-group nested-input">
+              <input type="text" class="form-control search-member multi-input" placeholder="Type to search" name="otherMembers">
+                <i class="fas fa-search search-member-icon"></i>
+              </input>
+            </div>
+        </div>
+      </div>
+  
+      <div class="form-group text-center mt-4">
+        <button class="btn btn-primary" type="submit">Update</button>
+        <button class="btn btn-outline-primary btn-cancel" type="submit">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+<%- include("../partials/loading") -%>

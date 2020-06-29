@@ -1,0 +1,25 @@
+<div class="association-container container-fluid" id="association-members-container">
+  <div class="row">
+    <% association.forEach((category) => { %>
+      
+      <% 
+        let gridClass = (category.title == "Other Members") ? "col other-members" : "col-4";
+        let otherClass = (category.title == "Other Members") ? " other-member" : "" 
+      %>
+
+      <div class="association-category <%= gridClass %>">
+        <h4 class="member-title"><%= category.title %></h4>
+          <% category.members.forEach((member) => { %>
+
+            <div id="<%= member %>" name="<%= category.title %>" class="association-member<%= otherClass %>">
+                <img class="member-pic" src="/uploads/<%=locals.flats[member].photo %>" alt="">
+                <p class="member-name"><%= locals.flats[member].name %></p>
+                <p class="member-phone"><%= locals.flats[member].phone %></p>
+            </div>
+
+          <% }); %>
+      </div>
+    <% }); %>
+</div>
+  </div>
+<%- include("../partials/loading") -%>

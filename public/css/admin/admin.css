@@ -1,0 +1,99 @@
+/* flats section */
+
+.flat-container {
+    padding: 2%;
+}
+
+.flat {
+    padding: 10% 5%;
+    border-radius: 50%;
+    width: 81%;
+    background-image: radial-gradient(#ffeee6, #ff7733);
+}
+
+.block-title {
+    padding: 5%;
+}
+
+.flat:hover {
+    cursor: pointer;
+    background-image: radial-gradient( #ff7733, #ffeee6);
+}
+
+.flat:hover * {
+    color: white;
+}
+
+.flat-details-popup .pro-photo {
+    width: 100%;
+    height: auto;
+    padding: 15% 0;
+}
+
+
+.flat-detail {
+    margin: 7% 0;
+}
+
+.detail-value {
+    padding-left: 3%;
+}
+
+
+/* complaints section */
+
+.complaints-section.container-fluid {
+    padding: 2%;
+}
+
+/* association section */
+
+.edit-association {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background-color: floralwhite;
+    border:   1px solid floralwhite;
+    padding: .5% 1%;
+    box-shadow: 1px 1px 10px floralwhite;
+}
+
+.edit-association:hover {
+    cursor: pointer;
+    border: 1px solid #ffccb3;
+
+}
+
+#association-members-container {
+    padding-top: 5%;
+}
+
+.association-container {
+    min-height: 101%;
+}
+
+.form-search-input {
+    padding: 2% 10%;
+}
+
+.search-member {
+    position: relative;
+}
+
+.search-member-icon {
+    position: absolute;
+    right: 7%;
+    top: 25%;
+    color: grey;
+    z-index: 3;
+}
+
+
+.association-container .control-label {
+    padding-top: 1%;
+    font-weight: 500;
+}
+
+.association-container .drop-down {
+    width: calc(100% - 30px);
+}

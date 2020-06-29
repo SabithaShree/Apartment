@@ -28,17 +28,14 @@ exports.Flat = function()
   return mongoose.model("Flat", flatSchema);
 }
 
-exports.Contact = function()
+exports.Association = function()
 {
   const Schema = mongoose.Schema;
-  const contactSchema = new Schema({
+  const associationSchema = new Schema({
     title : String,
-    members : [{
-        name : String,
-        contact : Number
-      }]
+    members : [String]
   });
-  return mongoose.model("Contact", contactSchema);
+  return mongoose.model("Association", associationSchema);
 }
 
 exports.Forum = function()

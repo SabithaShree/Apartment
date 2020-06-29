@@ -7,17 +7,18 @@ const { v4: uuidv4 } = require("uuid");
 
 const User = model.User();
 const Flat = model.Flat();
-const Contact = model.Contact();
+const Association = model.Association();
 const Forum = model.Forum();
 const Complaint = model.Complaint();
 
 global.constants = Object.freeze({
+  "ADMIN": "admin",
   "USER": "user",
   "HOME": "home",
   "PROFILE": "profile",
   "MAINTANANCE": "maintanance",
   "SETTINGS": "settings",
-  "CONTACTS": "contacts",
+  "ASSOCIATION": "association",
   "FORUMS": "forums",
   "EXPENSES": "expenses",
   "FORUM": "forum",
@@ -27,7 +28,7 @@ global.constants = Object.freeze({
 });
 
 
-exports.redirectLogin = function(req, res, next) { // middleware function
+exports.checkLogin = function(req, res, next) { // middleware function
   if(!req.session.user_id) {
     res.redirect("/");
   }
@@ -39,7 +40,7 @@ exports.redirectLogin = function(req, res, next) { // middleware function
 exports.collection = {
   "User": User,
   "Flat": Flat,
-  "Contact": Contact,
+  "Association": Association,
   "Forum": Forum,
   "Complaint": Complaint
 };
@@ -67,10 +68,17 @@ exports.setSession = function(app) {
 
   app.use(function(req, res, next) {
     res.locals.user_id = req.session.user_id; // make it access globally across all templates
-    res.locals.user_name = req.session.user_photo;
-    res.locals.user_name = req.session.user_photo;
-    next();
+
+    db.findAllRowsWithFields(Flat, "flat_id name phone photo", function(flatsList) {
+        let flats = {};
+        flatsList.forEach((flat) => {
+          flats[flat.flat_id] = flat;
+        });
+        res.locals.flats = flats;
+        next();
+    });
   });
+
 }
 
 function isAjaxRequest(req)
@@ -78,23 +86,25 @@ function isAjaxRequest(req)
   return req.xhr;
 }
 
-exports.getTemplate =  function(req)
+exports.getRender =  function(req, loginType)
 {
   return new Promise((resolve) => {
     const isAjax = isAjaxRequest(req);
     let url = req.url;
-    url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
-    url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url;
-    let template = isAjax ? url : constants.USER;
-    resolve("user/" + template);
+    url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url; // non-ajax urls start with /
+    url = url.replace(loginType + "/", ""); // admin urls start with 'admin'
+    url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url; // forum url has 2 sections in forum
+    let template = isAjax ? url : loginType;
+    resolve(loginType + "/" + template);
   });
 }
 
-exports.getTemplateObject = function(req, templateObj)
+exports.getTemplateObject = function(req, templateObj, loginType)
 {
   return new Promise((resolve) => {
     let url = req.url;
     url = (url.charAt(0) == "/") ? url.substr(1, url.length) : url;
+    url = url.replace(loginType + "/", ""); // admin urls start with 'admin'
     url = (url.indexOf("/") > -1) ? url.substr(0, url.indexOf("/")) : url;
     templateObj.template = url;
     resolve(templateObj);

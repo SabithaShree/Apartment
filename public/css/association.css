@@ -1,0 +1,56 @@
+
+.association-container.container-fluid {
+  padding: 8%;
+}
+
+#association-members-container .member-title {
+  margin-bottom: 3%;
+}
+
+.association-category {
+  text-align: center;
+}
+
+.association-category p {
+  margin-bottom: 0;
+}
+
+.member-pic {
+  width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+
+.member-desc {
+  text-align: left;
+  padding-left: 5%;
+}
+
+.member-desc p {
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.member-phone{
+  color: #ff3333;
+}
+
+.other-members {
+  margin-top: 8%;
+}
+
+.other-member {
+    width: 23%;
+    position: relative;
+    display: inline-block;
+}
+
+@media (max-width : 768px) {
+  .member-pic {
+    width: 80px;
+    height: 80px;
+  }
+}

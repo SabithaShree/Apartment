@@ -1,13 +1,13 @@
-<div id="maintanance" class="maintanance-container container-fluid">
-</div>
-<!-- <script type="text/javascript" src="js/gpay.js"></script> -->
-<!-- <script async src="https://pay.google.com/gp/p/js/pay.js" onload="GooglePay()"></script>
-
 <script>
-  function GooglePay() {
-    window.paymentsClient = new google.payments.api.PaymentsClient({
-      environment: "TEST"
-    });
-  }
-</script> -->
+$(document).ready(function() {
+  let payment = new Payment();
+  payment.registerEvents("#maintanance-container");
+});
+</script>
+  
+
+<div id="maintanance-container" class="maintanance-container container-fluid">
+  <button id="pay-btn" class="btn btn-outline-primary">Pay</button>
+</div>
+
 <%- include("../partials/loading") -%>

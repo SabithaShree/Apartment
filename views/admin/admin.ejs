@@ -1,0 +1,32 @@
+<%- include("../partials/admin-header") -%>
+
+<script>
+  $(document).ready(function() {
+      let adminhome = new AdminHome();
+      adminhome.registerEvents("#admin-container")
+  });
+</script>
+
+<div id="admin-container" class="main-container full-height">
+  <!-- <i id="toggler-menu" class="toggler-icon fas fa-bars"></i> -->
+  <div class="row full-height">
+    <div id="left-pane" class="col-md-3 col-sm-0 left-pane">
+      <div class="position-fixed">
+        <ul class="menu-options">
+          <li class="apt-title"><img class="leftpane-logo" src="/images/stepsstone-logo.png" alt="Logo">Ananthaya</li>
+          <li class="menu-option flats selected" name="/admin/flats"><i class="fas fa-home"></i>Flats</li>
+          <li class="menu-option maintanance" name="/admin/maintanance"><i class="fas fa-rupee-sign"></i>Maintance</li>
+          <li class="menu-option expenses" name="/admin/expenses"><i class="fas fa-money-check"></i>Common Expenses</li>
+          <li class="menu-option complaints" name="/admin/complaints"><i class="fas fa-tools"></i>Complaints</li>
+          <li class="menu-option association" name="/admin/association"><i class="fas fa-users"></i>Association</li>
+          <li class="menu-option logout" name="" id="logout">Sign Out</li>
+        </ul>
+      </div>
+    </div>
+    <div id="right-pane" name="<%= template %>" class="col-md-9 col-sm-12 profile-body">
+        <%- include(template) -%>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/footer") -%>
