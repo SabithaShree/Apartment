@@ -10,6 +10,7 @@ const Flat = model.Flat();
 const Association = model.Association();
 const Forum = model.Forum();
 const Complaint = model.Complaint();
+const Payment = model.Payment();
 
 global.constants = Object.freeze({
   "ADMIN": "admin",
@@ -42,7 +43,8 @@ exports.collection = {
   "Flat": Flat,
   "Association": Association,
   "Forum": Forum,
-  "Complaint": Complaint
+  "Complaint": Complaint,
+  "Payment" : Payment
 };
 
 exports.setSession = function(app) {
@@ -69,7 +71,7 @@ exports.setSession = function(app) {
   app.use(function(req, res, next) {
     res.locals.user_id = req.session.user_id; // make it access globally across all templates
 
-    db.findAllRowsWithFields(Flat, "flat_id name phone photo", function(flatsList) {
+    db.findAllRowsWithFields(Flat, "flat_id name email phone photo", function(flatsList) {
         let flats = {};
         flatsList.forEach((flat) => {
           flats[flat.flat_id] = flat;

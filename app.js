@@ -1,11 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
-const cors = require('cors')
 const fs = require("fs");
 const multer  = require("multer");
 const mime = require("mime");
 const https = require("https");
+const crypto = require("crypto");
 const $ = require("jquery")
 const model = require(__dirname + "/model.js");
 const db = require(__dirname + "/database.js");
@@ -15,7 +15,6 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
-app.use(cors());
 app.use("/jquery-autogrow-textarea",express.static(__dirname + "/node_modules/jquery-autogrow-textarea"));
 app.use("/froala-editor", express.static(__dirname + "/node_modules/froala-editor"));
 let storage = multer.diskStorage({
@@ -147,13 +146,88 @@ app.get("/maintanance", util.checkLogin, async function(req, res) {
   );
 });
 
+app.post("/initiatePayment", util.checkLogin,  function(req, res) {
+  let merchantkey = "YnfV6dAo";
+	let salt = "aI8ADfA2VX";
+	let transactionId = "1234578";
+	let amt = req.body.amount;
+	let paymentInfo = req.body.period;
+	let user_id = req.session.user_id;
+  let emailId = "abc@gm.co";
+  
+  
+	let text = merchantkey +'|'+ transactionId +'|'+ amt + '|' + paymentInfo +'|'+ user_id +'|'+ emailId +'|||||||||||'+ salt;
+	let cryp = crypto.createHash('sha512');
+  cryp.update(text);
+	let hashCode = cryp.digest('hex');		
+	res.setHeader("Content-Type", "text/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+
+  let paymentReq = {
+    key: merchantkey,
+    txnid: transactionId,
+    hash: hashCode,
+    amount: amt,
+    firstname: user_id,
+    email: emailId,
+    phone: "1234567890",
+    productinfo: paymentInfo,
+    surl : "http://localhost:5000/paymentSuccess",
+    furl: "http://localhost:5000/paymentFail",
+    mode:'dropout'
+  }
+  res.send(paymentReq);	
+});
+
+app.post("/paymentSuccess", util.checkLogin, async function(req, res) {
+  console.log(req.body);
+
+  let key = req.body.key;
+	let salt = "aI8ADfA2VX";
+	let txnid = req.body.txnid;
+	let amount = req.body.amount;
+	let productinfo = req.body.productinfo;
+	let firstname = req.body.firstname;
+	let email = req.body.email;
+	let status = req.body.status;
+	let resphash = req.body.hash;
+	
+	let keyString = key+'|'+txnid+'|'+amount+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||' + status + '|' + salt;
+	let keyArray = keyString.split('|');
+	let reverseKeyArray	= keyArray.reverse();
+	let reverseKeyString = reverseKeyArray.join('|');
+	
+	let cryp = crypto.createHash('sha512');	
+	cryp.update(reverseKeyString);
+	let calchash = cryp.digest('hex');
+  
+	let msg = (calchash == resphash) ? 'Transaction Successful and Hash Verified...' :'Payment failed for Hash not verified...';
+  
+  let paymentObj = {
+    "txn_id": txnid,
+    "flat_id": firstname,
+    "date": req.body.addedon,
+    "amount": amount,
+    "period": req.body.productinfo,
+    "status": txnStatus,
+    "message": txnMessage
+  };
+  db.insertRow(collection.Payment, paymentObj, function(row) {
+    res.redirect("/maintanance");
+  });
+});
+
+app.post("/paymentFailure", function(req, res) {
+
+});
+
 app.get("/expenses", util.checkLogin, async function(req, res) {
   res.render(
     await util.getRender(req, constants.USER),  
     await util.getTemplateObject(req, {}, constants.USER)
   );
 });
-
 
 app.get("/forums", util.checkLogin, async function(req, res) {
   renderForums(req, res, await util.getRender(req, constants.USER));

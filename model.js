@@ -71,3 +71,17 @@ exports.Complaint = function()
   });
   return mongoose.model("Complaint", complaintSchema);
 }
+
+exports.Payment = function()
+{
+  const Schema = mongoose.Schema();
+  const paymentSchema = new Schema({
+    txn_id: String,
+    flat_id: String,
+    period: String,
+    date: Date,
+    amount: Number,
+    status: String,
+    message: String
+  });
+}
