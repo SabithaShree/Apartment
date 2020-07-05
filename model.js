@@ -74,7 +74,7 @@ exports.Complaint = function()
 
 exports.Payment = function()
 {
-  const Schema = mongoose.Schema();
+  const Schema = mongoose.Schema;
   const paymentSchema = new Schema({
     txn_id: String,
     flat_id: String,
@@ -84,4 +84,5 @@ exports.Payment = function()
     status: String,
     message: String
   });
+  return mongoose.model("Payment", paymentSchema);
 }

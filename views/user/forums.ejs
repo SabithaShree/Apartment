@@ -9,11 +9,14 @@
     <i class="fas fa-plus-circle"></i>
     <span>Post a new forum</span>
   </div>
-  <% forums.forEach(function(forum) { %>
+  <% forums.forEach(function(forum) { 
+    let userDetails = locals.flats[forum.author];
+    %>
+
     <div name="post" class="post" forum_id="<%= forum._id %>">
       <div class="row">
         <div class="image-sec col-2 center">
-          <img class="post-pro-pic" src="/uploads/<%= forum.photo %>" alt="profile-pic">
+          <img class="post-pro-pic" src="/uploads/<%= userDetails.photo %>" alt="profile-pic">
         </div>
         <div class="post-sec col-8">
           <h5><%= forum.title %></h5>

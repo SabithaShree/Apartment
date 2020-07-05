@@ -11,6 +11,11 @@ const model = require(__dirname + "/model.js");
 const db = require(__dirname + "/database.js");
 const util = require(__dirname + "/util.js");
 
+// TODO: move to props file
+
+const payuMerchantKey = "YnfV6dAo";
+const payuSalt = "aI8ADfA2VX";
+
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -139,24 +144,26 @@ app.get("/home", util.checkLogin, function(req, res) {
   });
 });
 
-app.get("/maintanance", util.checkLogin, async function(req, res) {
-  res.render(
-    await util.getRender(req, constants.USER),  
-    await util.getTemplateObject(req, {}, constants.USER)
-  );
+app.get("/maintanance", util.checkLogin, function(req, res) {
+  db.findAndSortRows(collection.Payment, {"flat_id" : req.session.user_id}, {"date": -1}, async function(payments) {
+    res.render(
+      await util.getRender(req, constants.USER),  
+      await util.getTemplateObject(req, {"payments" : payments},  constants.USER)
+    );
+  })
 });
 
-app.post("/initiatePayment", util.checkLogin,  function(req, res) {
-  let merchantkey = "YnfV6dAo";
-	let salt = "aI8ADfA2VX";
-	let transactionId = "1234578";
+app.post("/initiatePayment", util.checkLogin,  async function(req, res) {
+  
+	let transactionId = req.session.user_id + "_" + (new Date()).getMilliseconds();
 	let amt = req.body.amount;
 	let paymentInfo = req.body.period;
-	let user_id = req.session.user_id;
-  let emailId = "abc@gm.co";
+	let user_id = req.session.user_id; // firstname
+  let emailId = (await util.getUserDetails(user_id)).email;
+  let phoneNo = (await util.getUserDetails(user_id)).phone;
   
   
-	let text = merchantkey +'|'+ transactionId +'|'+ amt + '|' + paymentInfo +'|'+ user_id +'|'+ emailId +'|||||||||||'+ salt;
+	let text = payuMerchantKey +'|'+ transactionId +'|'+ amt + '|' + paymentInfo +'|'+ user_id +'|'+ emailId +'|||||||||||'+ payuSalt;
 	let cryp = crypto.createHash('sha512');
   cryp.update(text);
 	let hashCode = cryp.digest('hex');		
@@ -165,26 +172,22 @@ app.post("/initiatePayment", util.checkLogin,  function(req, res) {
 
 
   let paymentReq = {
-    key: merchantkey,
+    key: payuMerchantKey,
     txnid: transactionId,
     hash: hashCode,
     amount: amt,
     firstname: user_id,
     email: emailId,
-    phone: "1234567890",
+    phone: phoneNo,
     productinfo: paymentInfo,
     surl : "http://localhost:5000/paymentSuccess",
-    furl: "http://localhost:5000/paymentFail",
-    mode:'dropout'
+    furl: "http://localhost:5000/paymentSuccess", // they return same type of response. only values differ. so same url is ok.
+    mode:"dropout"
   }
   res.send(paymentReq);	
 });
 
 app.post("/paymentSuccess", util.checkLogin, async function(req, res) {
-  console.log(req.body);
-
-  let key = req.body.key;
-	let salt = "aI8ADfA2VX";
 	let txnid = req.body.txnid;
 	let amount = req.body.amount;
 	let productinfo = req.body.productinfo;
@@ -193,7 +196,7 @@ app.post("/paymentSuccess", util.checkLogin, async function(req, res) {
 	let status = req.body.status;
 	let resphash = req.body.hash;
 	
-	let keyString = key+'|'+txnid+'|'+amount+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||' + status + '|' + salt;
+	let keyString = payuMerchantKey +'|'+txnid+'|'+amount+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||' + status + '|' + payuSalt;
 	let keyArray = keyString.split('|');
 	let reverseKeyArray	= keyArray.reverse();
 	let reverseKeyString = reverseKeyArray.join('|');
@@ -204,22 +207,25 @@ app.post("/paymentSuccess", util.checkLogin, async function(req, res) {
   
 	let msg = (calchash == resphash) ? 'Transaction Successful and Hash Verified...' :'Payment failed for Hash not verified...';
   
-  let paymentObj = {
-    "txn_id": txnid,
-    "flat_id": firstname,
-    "date": req.body.addedon,
-    "amount": amount,
-    "period": req.body.productinfo,
-    "status": txnStatus,
-    "message": txnMessage
-  };
-  db.insertRow(collection.Payment, paymentObj, function(row) {
+  if(calchash == resphash) {
+    let paymentObj = {
+      "txn_id": req.body.payuMoneyId,
+      "flat_id": req.body.firstname,
+      "date": req.body.addedon,
+      "amount": req.body.amount,
+      "period": req.body.productinfo,
+      "status": req.body.txnStatus,
+      "message": req.body.txnMessage
+    };
+    db.insertRow(collection.Payment, paymentObj, function(row) {
+      res.redirect("/maintanance");
+    });
+  }
+  else {
+    console.log(msg);
     res.redirect("/maintanance");
-  });
-});
-
-app.post("/paymentFailure", function(req, res) {
-
+  }
+  
 });
 
 app.get("/expenses", util.checkLogin, async function(req, res) {
@@ -262,8 +268,7 @@ app.post("/deleteforum", util.checkLogin, function(req, res) {
 });
 
 app.get("/forum/:forum_id", util.checkLogin, function(req, res) {
-  db.findRow(collection.Forum, {"_id": req.params.forum_id}, async function(forum) {
-    let forumObj = await util.getForumObject(forum);
+  db.findRow(collection.Forum, {"_id": req.params.forum_id}, async function(forumObj) {
     res.render(
       await util.getRender(req, constants.USER) , 
       await util.getTemplateObject(req, forumObj, constants.USER)
@@ -301,8 +306,7 @@ app.post("/comment", function(req, res) {
       "content": req.body.content,
       "date": new Date()
     });
-    db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
-      let forumObj = await util.getForumObject(forum);
+    db.findAndUpdateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(forumObj) {
       res.render("user/" + constants.FORUM , forumObj);
     });
   });
@@ -311,8 +315,7 @@ app.post("/comment", function(req, res) {
 app.post("/deletecomment", function(req, res) {
   db.findRow(collection.Forum, {"_id": req.body.forum_id}, function(forum) {
     forum.comments = forum.comments.filter((comment) => comment._id != req.body.comment_id);
-    db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
-      let forumObj = await util.getForumObject(forum);
+    db.findAndUpdateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(forumObj) {
       res.render("user/" + constants.FORUM , forumObj);
     });
   });
@@ -329,8 +332,7 @@ app.post("/like",  function(req, res) {
       let filteredArr = forum.likes.filter((user) => user !== loginuser);
       forum.likes = filteredArr;
     }
-    db.updateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(response) {
-      let forumObj = await util.getForumObject(forum);
+    db.findAndUpdateRow(collection.Forum, {"_id": req.body.forum_id}, forum, async function(forumObj) {
       res.render("user/" + constants.FORUM , forumObj);
     });
   });
@@ -442,10 +444,9 @@ app.post("/logout", function(req, res) {
 function renderForums(req, res, render)
 {
   db.findAndSortRows(collection.Forum, {}, {"date": -1}, async function(forums) {
-    let forumsObj = await util.getForumsObject(forums);
     res.render(
       render, 
-      await util.getTemplateObject(req, {"forums" : forumsObj}, constants.USER)
+      await util.getTemplateObject(req, {"forums" : forums}, constants.USER)
     );
   });
 }

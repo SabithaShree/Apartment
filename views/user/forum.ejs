@@ -8,7 +8,7 @@
 <div id="forum-container" forum_id="<%= _id %>" class="forum-container container-fluid">
   <i id="go-back" class="more-options fas fa-arrow-left ml-4"></i>
 
-  <% let flag = (user_id == author_id) ? "" : "hide"; %>
+  <% let flag = (user_id == author) ? "" : "hide"; %>
   <i id="more-options" class="more-options fas fa-ellipsis-h <%= flag %>"></i>
   <div class="dropdown">
     <div id="more-options-menu" class="dropdown-menu more-options-menu">
@@ -37,9 +37,11 @@
   <div class="forum-header">
     <div class="row">
       <div class="col-lg-2 col-sm-4 center">
-        <% let imagePath = "/uploads/" + photo; %>
+        <% 
+          let forumUser = locals.flats[author];
+          let imagePath = "/uploads/" + forumUser.photo; %>
         <img class="post-pro-pic forum-pic" src="<%= imagePath %>" alt="profile-pic">
-        <p class="forum-author"><%= author %></p>
+        <p class="forum-author"><%= forumUser.name %></p>
       </div>
       <div class="col-lg-10 col-sm-8">
         <h1 class="forum-title"><%=title %></h1>
@@ -68,20 +70,23 @@
 
   <div id="forum-comments" class="forum-comments">
 
-    <% comments.forEach(function(comment) {%>
+    <% comments.forEach(function(comment) {
+      let commentUser = locals.flats[comment.author];
+    %>
+      
       <div class="row comment">
         <div class="col-2">
-          <% let imagePath = "/uploads/" + comment.photo; %>
+          <% let imagePath = "/uploads/" + commentUser.photo; %>
           <img class="comment-pro-pic" src="<%= imagePath %>" alt="profile-pic">
         </div>
         <div class="comment-body col-10" id="<%= comment._id%>">
-          <p class="comment-user"><%= comment.author%></p>
+          <p class="comment-user"><%= commentUser.name%></p>
           <% let d = comment.date %>
           <span class="forum-date">
             <%= getDateStr(comment.date) + "  " + getTimeStr(comment.date) %>
           </span>
           <p class="comment-content"><%= comment.content%></p>
-          <% let dflag = (user_id == comment.author_id) ? "" : "hide"; %>
+          <% let dflag = (user_id == comment.author) ? "" : "hide"; %>
           <i id="delete-comment"
             class="delete-comment-icon fas fa-trash-alt <%= dflag %>">
           </i>

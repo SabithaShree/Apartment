@@ -23,6 +23,7 @@ class Vehicle
                     $(resContainer).find("#search-result").addClass("hide");
                     $(resContainer).find("#no-results").removeClass("hide");
                   }
+                  $(resContainer).find(".default-vehicle").addClass("hide");
                   $("html, body").animate({
                     scrollTop: $(resContainer).offset().top
                   }, 500);

@@ -33,6 +33,17 @@ exports.findAllRows = function(Collection, callback) {
   });
 }
 
+exports.findRows = function(Collection, condition, callback) {
+  Collection.find(condition, function(err, rows) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      callback(rows);
+    }
+  });
+}
+
 exports.findAllRowsWithFields = function(Collection, fields, callback) {
   Collection.find({}, fields, function(err, rows) {
     if(err) {

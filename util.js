@@ -113,55 +113,13 @@ exports.getTemplateObject = function(req, templateObj, loginType)
   });
 }
 
-exports.getForumsObject = async function(forums)
-{
-  return new Promise(async (resolve) => {
-    let forumsArr = forums;
-    for(let i=0; i<forumsArr.length; i++) {
-      forumsArr[i].photo = await getUserPhoto(forumsArr[i].author);
-    }
-    resolve(forumsArr);
-  });
-}
-
-exports.getForumObject = function(forum)
-{
-  return new Promise(async (resolve) => {
-    let forumObj = forum;
-    let username = await getUserName(forumObj.author);
-    let userPic = await getUserPhoto(forumObj.author);
-    forumObj.author_id = forumObj.author;
-    forumObj.author = username;
-    forumObj.photo = userPic;
-
-    for(var i=0; i<forumObj.comments.length; i++)
-    {
-      let cmtUserName = await getUserName(forumObj.comments[i].author);
-      let commentUserPic = await getUserPhoto(forumObj.comments[i].author);
-      forumObj.comments[i].author_id = forumObj.comments[i].author;
-      forumObj.comments[i].author = cmtUserName;
-      forumObj.comments[i].photo = commentUserPic;
-    };
-    resolve(forumObj);
-  });
-}
-
-async function getUserName(flat_id)
+exports.getUserDetails = function(flat_id)
 {
   return new Promise((resolve) => {
-    db.findRow(Flat, {"flat_id": flat_id}, function(flat)  {
-      resolve(flat.name);
-    });
+    db.findRow(Flat, {"flat_id": flat_id}, function(flat) {
+      resolve(flat);
+    })
   });
-}
-
-async function getUserPhoto(flat_id)
-{
-  return new Promise((resolve) => {
-    db.findRow(Flat, {"flat_id": flat_id}, function(flat)  {
-      resolve(flat.photo);
-    });
-  })
 }
 
 
