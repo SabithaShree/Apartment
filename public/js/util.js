@@ -79,4 +79,23 @@ $.fn.extend({
   }
 });
 
+$.expr[":"].icontains = $.expr.createPseudo(function (arg) {   // insensitive dom search for particular text                                                                                                                                                             
+  return function (elem) {                                                            
+      return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;        
+  };                                                                                  
+});
+
+$.fn.extend({
+  searchBar: function() {
+    let searchbar = this;
+    $(searchbar).on("keyup", "input[name=searchInput]", function() {
+      let searchVal = $(this).val();
+      let container = $(searchbar).attr("parent");
+      let searchTarget = $(searchbar).attr("target");
+      let filteredElements = $(container).find(searchTarget + ":not(:icontains('" + searchVal + "'))");
+      $(container).find(searchTarget).removeClass("hide");
+      $(filteredElements).addClass("hide");
+    });
+  }
+});
 

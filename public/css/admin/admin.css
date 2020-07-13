@@ -1,5 +1,9 @@
 /* flats section */
 
+.flats-container.container-fluid {
+    padding: 0 8%;
+}
+
 .flat-container {
     padding: 2%;
 }
@@ -96,4 +100,50 @@
 
 .association-container .drop-down {
     width: calc(100% - 30px);
+}
+
+
+/* maintanance  */
+
+.maintanance-navbar .nav-item {
+    padding: 0 3%;
+    text-align: center;
+    border-bottom: 1px solid #ff3333;
+}
+
+.maintanance-navbar .nav-item.active {
+    border-bottom: 4px solid #ff3333;
+}
+
+.maintanance-report {
+    background-color: white;
+    width: 100%;
+    padding: 2%;
+    margin-bottom: 5%;
+    font-size: 1rem;
+}
+
+.maintanance-stats p {
+    line-height: 0.5;
+}
+
+.maintanance-stats {
+    padding: 3%;
+}
+
+.stats-value {
+    color: red;
+}
+
+.stats-label {
+    font-size: 1rem;
+    color: grey;
+}
+
+.payments-container {
+    margin-top: 0;
+}
+
+.maintanance-period-select {
+    margin-bottom : 5%;
 }

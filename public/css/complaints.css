@@ -2,6 +2,10 @@
   padding: 4%;
 }
 
+.complaints-container {
+  min-height: 101%;
+}
+
 textarea.complaint-desc {
   resize: none;
   height: 250px;

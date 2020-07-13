@@ -52,7 +52,7 @@ exports.setSession = function(app) {
 
   let sessionObj = {
     name: "sid", // name of sessionid, default : connect.sid
-    secret: "k*a$v1i&n", // some random word used for hashing. TODO: store it in .env file not in source code
+    secret: process.env.SESSION_SECRET, // some random word used for hashing.
     resave: false, //don't save session if unmodified
     saveUninitialized: true, // don't create session until something store
     genid: function(req) {
@@ -71,7 +71,7 @@ exports.setSession = function(app) {
   app.use(function(req, res, next) {
     res.locals.user_id = req.session.user_id; // make it access globally across all templates
 
-    db.findAllRowsWithFields(Flat, "flat_id name email phone photo", function(flatsList) {
+    db.findAllRowsWithFields(Flat, "flat_id name email phone photo area", function(flatsList) {
         let flats = {};
         flatsList.forEach((flat) => {
           flats[flat.flat_id] = flat;

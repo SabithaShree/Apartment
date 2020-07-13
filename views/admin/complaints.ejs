@@ -6,14 +6,18 @@
   </script>
   <div id="complaints-container" class="complaints-container container-fluid">
   
+    <div parent="#complaints-container" target=".complaint" id="complaint-search" class="input-group form-group dom-search">
+      <input type="text" name="searchInput" class="form-control" placeholder="Search using keywords">
+      <div class="input-group-append">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+      </div>
+    </div>
+
     <%
       function getDateStr(date)
       {
-        const months = [
-              "January", "February", "March", "April", "May", "June", "July",
-              "August", "September", "October", "November", "December"];
-  
-          const dateStr = months[date.getMonth()] + " " + date.getDate();
+          let month = date.toLocaleString('default', { month: 'long' });
+          const dateStr = month + " " + date.getDate();
           return dateStr;
       }
     %>

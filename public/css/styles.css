@@ -47,6 +47,8 @@ h1, h2 {
   display: block;
 }
 
+/* multiselect drop-down */
+
 .drop-down {
   width: inherit;
   background-color: white;
@@ -100,8 +102,14 @@ h1, h2 {
   cursor: pointer;
 }
 
-
-
 .multi-select .nested-input {
   padding: 1%;
+}
+
+/* search bar */
+
+.dom-search {
+  width: 40%;
+  position: relative;
+  left: 56%;
 }

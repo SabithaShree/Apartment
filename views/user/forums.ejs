@@ -5,6 +5,12 @@
   });
 </script>
 <div id="forums-container" class="forums-container container-fluid">
+  <div parent="#forums-container" target=".post" id="forum-search" class="input-group form-group dom-search">
+    <input type="text" name="searchInput" class="form-control" placeholder="Search using author / keywords">
+    <div class="input-group-append">
+      <span class="input-group-text"><i class="fas fa-search"></i></span>
+    </div>
+  </div>
   <div id="compose" class="post center">
     <i class="fas fa-plus-circle"></i>
     <span>Post a new forum</span>
@@ -20,6 +26,10 @@
         </div>
         <div class="post-sec col-8">
           <h5><%= forum.title %></h5>
+          <div class="hide">
+            <%= userDetails.name %>
+            <%- forum.content %>
+          </div>
           <div class="content-short">
             <%- forum.content %>
           </div>

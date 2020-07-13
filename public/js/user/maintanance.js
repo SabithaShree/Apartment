@@ -7,6 +7,7 @@ class Payment
             $(this).addClass("hide");
             $(payment).find("#payment-form").removeClass("hide");
         });
+        
         $(payment).on("click", ".dropdown-menu .dropdown-item", function() {
           var selText = $(this).text();
           $(this).parents('.btn-group').find('.dropdown-toggle')

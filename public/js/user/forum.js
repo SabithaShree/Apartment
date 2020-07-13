@@ -12,6 +12,8 @@ class Forum
       $(content).html(croppedContent);
     });
 
+    $(forums).find("#forum-search").searchBar();
+
     $(forums).on("click", "div[name=post]", function() {
       let reqUrl = "/forum/" + $(this).attr("forum_id");
       $.ajax({

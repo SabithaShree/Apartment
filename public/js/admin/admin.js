@@ -51,9 +51,7 @@ class Complaint
 {
     registerEvents(complaint)
     {
-        $(complaint).on("click", ".complaint-title", function(e){
-
-        });
+        $(complaint).find("#complaint-search").searchBar();
     }
 }
 
@@ -160,4 +158,45 @@ class Association
         
     }
 
+}
+
+class Maintanance 
+{
+    registerEvents(maintanance)
+    {
+        let date = new Date();
+        let currentMonth = date.toLocaleString('default', { month: 'long' });
+        let currentYear = date.getFullYear();
+        let span = "<span class='caret'></span>";
+
+        // $(maintanance).find(".maintanance-period-select #month").html(currentMonth + span).attr("val", currentMonth);
+        // $(maintanance).find(".maintanance-period-select #year").html(currentYear + span).attr("val", currentYear);
+
+        $(maintanance).on("click", ".maintanance-period-select .dropdown-item", function() {
+
+            var selText = $(this).text();
+             $(this).parents('.btn-group').find('.dropdown-toggle')
+                .html(selText + span)
+                .attr("val", selText);
+
+            let month = $(maintanance).find(".maintanance-period-select #month").attr("val");
+            let year = $(maintanance).find(".maintanance-period-select #year").attr("val");
+
+            month = (month == "Month") ? currentMonth : month;
+            year = (year == "Year") ? currentYear : year;
+
+            $.ajax({
+                url : "/admin/maintanance",
+                method : "GET",
+                data : {"period": month + " " + year},
+                beforeSend : showLoading(),
+                success : function(res, status, xhr) {
+                    $("#right-pane").html(res);
+                    $("#right-pane").find(".maintanance-period-select #month").html(month + span).attr("val", currentMonth);
+                    $("#right-pane").find(".maintanance-period-select #year").html(year + span).attr("val", currentYear);
+                    hideLoading();
+                }
+              });
+        });
+    }
 }

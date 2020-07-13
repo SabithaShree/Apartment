@@ -1,0 +1,110 @@
+<script>
+    $(document).ready(function() {
+        let maintanance = new Maintanance();
+        maintanance.registerEvents("#maintanance-container"); 
+    });
+</script>
+<div id="maintanance-container">
+    <nav id="maintanance-navbar" class="navbar-expand-lg navbar-light maintanance-navbar">
+        <div class="navbar">
+          <ul class="navbar-nav mr-auto ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" name="payments-container" href="#">Maintanance Report</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Unpaid Members</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Disabled</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+
+    <div id="payments-container" class="payments-container container-fluid">
+        <%
+            let tableHeadings = ["flat_id", "date", "amount", "period"];
+
+            function getDateStr(date)
+            {
+                let month = date.toLocaleString('default', { month: 'long' });
+                const dateStr = month + " " + date.getDate();
+                return dateStr;
+            }
+
+            function getTimeStr(date)
+            {
+            const timeStr = date.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
+            return timeStr;
+            }
+        %>
+
+        <div class="maintanance-report">
+          <div class="row">
+            <div class="col-6">
+              <div class="maintanance-stats">
+                <p class="stats-value">Rs. <%= totalMaintanance %></p>
+                <p class="stats-label">Total amount</p>
+              </div>
+              <div class="maintanance-stats">
+                <p class="stats-value">25 flats</p> 
+                <p class="stats-label">Yet to pay </p>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="maintanance-stats">
+                <p class="stats-value"><%= totalMaintanance %></p>
+                <p class="stats-label">Total Expense </p>
+              </div>
+              <div class="maintanance-stats">
+                <p class="stats-value">25 flats</p> 
+                <p class="stats-label">Flats yet to pay </p>
+              </div> 
+            </div>
+          </div>
+        </div>
+
+        <div class="maintanance-period-select center">
+            <%- include("../partials/month-year") -%>
+        </div>
+
+        <table class="table payments-table center">
+          <thead class="table-head">
+            <tr>
+              <th scope="col">Flat</th>
+              <th scope="col">Date</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Period</th>
+            </tr>
+          </thead>
+          <tbody>
+      
+            <%
+              if(payments.length > 0) {
+                payments.forEach((payment) => { %>
+                <tr>
+                <% for(var i=0; i<tableHeadings.length; i++) { %>
+                    <% if(tableHeadings[i] === "date")  {%>
+                      <td><%= getDateStr(payment[tableHeadings[i]]) %></td>
+                    <% } else if(tableHeadings[i] === "amount")  { %>
+                        <td>Rs.<%= payment[tableHeadings[i]] %></td>
+                    <% } else { %>
+                      <td><%= payment[tableHeadings[i]] %></td>
+                  <% } } %>
+                </tr>
+              <% }); 
+                } 
+                else { %>
+                  <td colspan="4">
+                    <div class="no-transactions">
+                      <img src="/images/no-transactions.png" alt="no-transactions">
+                    </div>
+                    No records found for this month.
+                  </td>
+                <% } %>
+          </tbody>
+        </table>
+      </div>
+</div>
+
+<%- include("../partials/loading") -%>
