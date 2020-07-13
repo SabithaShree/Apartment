@@ -99,6 +99,17 @@ exports.findAndUpdateRow = function(Collection, condition, updatedata, callback)
   })
 }
 
+exports.aggregate = function(Collection, expression, callback ) {
+  Collection.aggregate(expression, function(err, response) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      callback(response);
+    }
+  })
+}
+
 exports.deleteRow = function(Collection, condition, callback) {
   Collection.deleteOne(condition, function(err, deleteddata){
     if(err) {

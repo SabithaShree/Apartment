@@ -7,7 +7,8 @@ exports.User = function()
   const Schema = mongoose.Schema;
   const userSchema = new Schema({
     username : String,
-    password : String
+    password : String,
+    salt : String
   });
   return mongoose.model("User", userSchema);
 }
@@ -23,7 +24,8 @@ exports.Flat = function()
     family : Number,
     twowheeler : String,
     fourwheeler : String,
-    photo : String
+    photo : String,
+    area : Number
   });
   return mongoose.model("Flat", flatSchema);
 }
@@ -85,4 +87,12 @@ exports.Payment = function()
     message: String
   });
   return mongoose.model("Payment", paymentSchema);
+}
+
+exports.Expenses = function() {
+  const Schema = new Schema({
+    date: Date,
+    description: String,
+    amount: Number
+  });
 }

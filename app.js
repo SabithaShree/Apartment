@@ -3,19 +3,16 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const fs = require("fs");
 const multer  = require("multer");
-const mime = require("mime");
+// const mime = require("mime");
 const https = require("https");
 const crypto = require("crypto");
-const $ = require("jquery")
+const dotenv = require("dotenv");
+const $ = require("jquery");
 const model = require(__dirname + "/model.js");
 const db = require(__dirname + "/database.js");
 const util = require(__dirname + "/util.js");
 
-// TODO: move to props file
-
-const payuMerchantKey = "YnfV6dAo";
-const payuSalt = "aI8ADfA2VX";
-
+dotenv.config();
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -53,7 +50,14 @@ app.post("/login",  function(req, res) {
   const username = req.body.username;
   const password = req.body.password;
   db.findRow(collection.User, {"username" : username}, function(user) {
-    if(password === user.password) {
+
+    let salt = user.salt;
+    let text = password + "|" + salt;
+	  let cryp = crypto.createHash('sha512');
+    cryp.update(text);
+	  let hash = cryp.digest('hex');	
+
+    if(hash === user.password) {
       req.session.user_id = username;
       req.session.save();
 
@@ -133,6 +137,35 @@ app.get("/getFlats", util.checkLogin, function(req, res) {
 });
 
 
+app.get("/admin/maintanance", util.checkLogin, function(req, res) {
+  let searchObj = {};
+  if(req.query.period) {
+    searchObj.period = req.query.period;
+    searchObj.status = "SUCCESS";
+    req.url = req.url.split("?")[0];
+  }
+  else {
+    let date = new Date();
+    let month = date.toLocaleString('default', { month: 'long' });
+    let year = date.getFullYear();
+    searchObj = {"period": month + " " + year, "status": "SUCCESS"};
+  }
+
+  let retObj = {};
+  let group = {_id: null, totalMaintanance: {$sum: '$amount'}};
+  let aggrExp = [{$match: searchObj}, {$group: group}];
+  db.aggregate(collection.Payment , aggrExp, function(response) {
+    retObj.totalMaintanance = (response.length > 0) ? response[0].totalMaintanance : "NIL";
+    db.findRows(collection.Payment, searchObj, async function(payments) {
+      retObj.payments = payments;
+      res.render(
+        await util.getRender(req, constants.ADMIN) ,
+        await util.getTemplateObject(req, retObj, constants.ADMIN)
+      );
+    });
+  });
+});
+
 app.get("/home", util.checkLogin, function(req, res) {
   db.findRow(collection.Flat, {"flat_id" : req.session.user_id}, async function(flat) {
     req.session.user_name = flat.name;
@@ -163,7 +196,7 @@ app.post("/initiatePayment", util.checkLogin,  async function(req, res) {
   let phoneNo = (await util.getUserDetails(user_id)).phone;
   
   
-	let text = payuMerchantKey +'|'+ transactionId +'|'+ amt + '|' + paymentInfo +'|'+ user_id +'|'+ emailId +'|||||||||||'+ payuSalt;
+	let text = process.env.PAYU_KEY +'|'+ transactionId +'|'+ amt + '|' + paymentInfo +'|'+ user_id +'|'+ emailId +'|||||||||||'+ process.env.PAYU_KEY;
 	let cryp = crypto.createHash('sha512');
   cryp.update(text);
 	let hashCode = cryp.digest('hex');		
@@ -172,8 +205,8 @@ app.post("/initiatePayment", util.checkLogin,  async function(req, res) {
 
 
   let paymentReq = {
-    key: payuMerchantKey,
-    txnid: transactionId,
+    key: process.env.PAYU_KEY,
+    txnid: process.env.PAYU_SALT,
     hash: hashCode,
     amount: amt,
     firstname: user_id,
@@ -196,7 +229,7 @@ app.post("/paymentSuccess", util.checkLogin, async function(req, res) {
 	let status = req.body.status;
 	let resphash = req.body.hash;
 	
-	let keyString = payuMerchantKey +'|'+txnid+'|'+amount+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||' + status + '|' + payuSalt;
+	let keyString = process.env.PAYU_KEY +'|'+txnid+'|'+amount+'|'+productinfo+'|'+firstname+'|'+email+'|||||||||||' + status + '|' + process.env.PAYU_SALT;
 	let keyArray = keyString.split('|');
 	let reverseKeyArray	= keyArray.reverse();
 	let reverseKeyString = reverseKeyArray.join('|');
@@ -218,7 +251,28 @@ app.post("/paymentSuccess", util.checkLogin, async function(req, res) {
       "message": req.body.txnMessage
     };
     db.insertRow(collection.Payment, paymentObj, function(row) {
-      res.redirect("/maintanance");
+      let url = "https://uat-accounts.payu.in/oauth/token";
+      const options = {
+        method: "POST",
+        headers: { 'Content-Type' : 'application/json' }
+      }
+      let reqData = {
+        client_id: process.env.PAYU_KEY,
+        client_secret: process.env.PAYU_SALT,
+        grant_type: "client_credentials",
+        scope: "create_invoice_payumoney"
+      }
+
+      let callback = function(response) {
+        response.on("data", function(apiResp) {
+          process.stdout.write(apiResp);
+          res.redirect("/maintanance");
+        });
+      }
+
+      const request = https.request(url, options, callback);
+      request.write(JSON.stringify(reqData));
+      request.end();
     });
   }
   else {
@@ -418,8 +472,22 @@ app.post("/updateProfile", upload.single("photo"), function(req, res) {
 
 app.post("/updatePassword", function(req, res) {
   db.findRow(collection.User, {"username" : req.session.user_id}, function(user) {
-    if(req.body.oldPassword === user.password) {
-      db.findAndUpdateRow(collection.User, {"username" : req.session.user_id}, {"password": req.body.password}, function(user) {
+
+    let oldPwd = req.body.oldPassword;
+    let oldText = oldPwd + "|" + user.salt;
+    let cryp = crypto.createHash('sha512');
+    cryp.update(oldText);
+    let oldHash = cryp.digest('hex');
+
+    if(oldHash === user.password) {
+
+      let newPwd = req.body.password;
+      let newText = newPwd + "|" + user.salt;
+      let newcryp = crypto.createHash('sha512');
+      newcryp.update(newText);
+      let newHash = newcryp.digest('hex');
+
+      db.findAndUpdateRow(collection.User, {"username" : req.session.user_id}, {"password": newHash}, function(user) {
         db.findRow(collection.Flat, {"flat_id": req.session.user_id}, function(flat) {
           flat.template = constants.HOME;
           res.render("user/" + constants.HOME, flat);
@@ -461,15 +529,21 @@ function renderComplaints(req, res, render)
   });
 }
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 5000;
-}
+app.get("/migration", function(req, res) {
+  db.findAllRows(collection.User, function(users) {
+    users.forEach((user) => {
+      let password = user.username + "*123";
+      let salt = crypto.randomBytes(12).toString('base64');
+      let saltPwd = password + "|" + salt;
+      let cryp = crypto.createHash('sha512');
+      cryp.update(saltPwd);
+      let pwdHash = cryp.digest('hex');
+      db.findAndUpdateRow(collection.User, {username: user.username}, {password: pwdHash, salt: salt}, function(updated) {
+      });
+    });
+  });
+});
 
-// https.createServer({
-//   key: fs.readFileSync('server.key'),
-//   cert: fs.readFileSync('server.cert')
-// }, app)
-app.listen(port, function () {
+app.listen(process.env.PORT, function () {
   console.log("Server started on port 5000");
 });
