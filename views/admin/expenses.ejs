@@ -1,10 +1,109 @@
 <script>
     $(document).ready(function() {
-        // let expenses = new Expenses();
-        // expenses.registerEvents($("#association-container"));
+        let expense = new Expense();
+        expense.registerEvents($("#expense-container"));
     });
 </script>
 
-<div id="association-container">
+<div id="expense-container" class="container-fluid expense-container">
 
+    <nav id="expense-navbar" class="navbar-expand-lg navbar-light maintanance-navbar">
+        <div class="navbar">
+          <ul class="navbar-nav mr-auto ml-auto">
+            <li class="nav-item active" name="expense-form-container">
+              <a class="nav-link" href="javascript:;">Expense Form</a>
+            </li>
+            <li class="nav-item" name="expense-report-container">
+              <a class="nav-link" href="javascript:;">Expense Report</a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+
+    <div id="expense-form-container" class="expense-form-container expense-sub-div">
+        <form id="expense-form" class="form-horizontal payment-form mb-5" method="POST">
+            <h4 class="payment-form-heading">Expense Form</h4>
+            <div class="form-group row">
+                <label class="control-label col-sm-4">Date</label>
+                <div class="col-sm-8">
+                    <input type="date" name="date" max="2025-12-31" min="2020-01-01" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row mt-5">
+                <label class="control-label col-sm-4" for="description">Description (Rs.)</label>
+                <div class="col-sm-8">
+                  <input name="description" type="text" class="form-control" id="description">
+                </div>
+              </div>
+            <div class="form-group row mt-5">
+              <label class="control-label col-sm-4" for="amount">Amount (Rs.)</label>
+              <div class="col-sm-8">
+                <input name="amount" type="text" class="form-control" id="amount">
+              </div>
+            </div>
+            <div class="form-group text-center mt-5">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+          </form>
+    </div>
+
+
+
+    <div id="expense-report-container" class="expense-report-container hide expense-sub-div">
+        <div class="apt-dd center">
+            <%- include("../partials/month-year") -%>
+        </div>
+        <table class="table apt-table center">
+            <thead class="table-head">
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% let tableHeadings = ["date", "description", "amount"];
+
+                function getDateStr(date)
+                {
+                    let month = date.toLocaleString('default', { month: 'long' });
+                    const dateStr = month + " " + date.getDate();
+                    return dateStr;
+                }
+                if(expenses.length > 0) {
+                  expenses.forEach(function(expense) { %>
+                  <tr>
+                    <% for(var i=0; i<tableHeadings.length; i++) { %>
+                      <% if(tableHeadings[i] === "date")  {%>
+                        <td><%= getDateStr(expense[tableHeadings[i]]) %></td>
+                      <% } else if(tableHeadings[i] === "amount")  { %>
+                          <td>Rs.<%= expense[tableHeadings[i]] %></td>
+                      <% } else { %>
+                        <td><%= expense[tableHeadings[i]] %></td>
+                    <% } } %>
+                  </tr>
+                  <% }) 
+                }
+                else { %>
+                  <td colspan="4">
+                    <div class="no-transactions">
+                      <img src="/images/no-transactions.png" alt="no-transactions">
+                    </div>
+                    No expenses found for this month.
+                  </td>
+                <% } %>
+                <tr class="total-expense">
+                  <td colspan="2">
+                    <% let currentMonth = (new Date()).toLocaleString('default', { month: 'long' })%>
+                    Total Expense for the month of <%= currentMonth %>
+                  </td>
+                  <td>
+                    Rs.<%= totalExpense %>
+                  </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    
 </div>

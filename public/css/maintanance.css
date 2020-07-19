@@ -6,37 +6,6 @@
     margin-top: 7%;
 }
 
-.payments-table {
-    background-color: #ffffff;
-}
-
-.payments-table .table-head {
-    background-image: linear-gradient(to bottom, #ff9966, #ffaa80, #ff9966);
-    color: white;
-}
-
-.payments-table th {
-    color: white;
-    border-right: 1px solid white;
-}
-
-.payments-table td {
-    font-size: 1rem;
-}
-
-.payment-form {
-    background-color: #ffffff;
-    padding: 6% 10%;
-}
-
-.payment-form-heading {
-    padding-bottom: 1rem;
-    border-bottom: 0.5px solid #ffddcc;
-    color: #ff3333;
-    display: inline-block;
-    margin-bottom: 3rem;
-}
-
 .amount-input {
     width: 87%;
 }

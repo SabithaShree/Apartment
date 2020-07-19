@@ -9,13 +9,10 @@
         <div class="navbar">
           <ul class="navbar-nav mr-auto ml-auto">
             <li class="nav-item active">
-              <a class="nav-link" name="payments-container" href="#">Maintanance Report</a>
+              <a class="nav-link" name="payments-container" href="javascript:;">Maintanance Report</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Unpaid Members</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Disabled</a>
+              <a class="nav-link" href="javascript:;">Unpaid Members</a>
             </li>
           </ul>
         </div>
@@ -30,12 +27,6 @@
                 let month = date.toLocaleString('default', { month: 'long' });
                 const dateStr = month + " " + date.getDate();
                 return dateStr;
-            }
-
-            function getTimeStr(date)
-            {
-            const timeStr = date.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
-            return timeStr;
             }
         %>
 
@@ -64,11 +55,11 @@
           </div>
         </div>
 
-        <div class="maintanance-period-select center">
+        <div class="maintanance-period-select apt-dd center">
             <%- include("../partials/month-year") -%>
         </div>
 
-        <table class="table payments-table center">
+        <table class="table apt-table center">
           <thead class="table-head">
             <tr>
               <th scope="col">Flat</th>

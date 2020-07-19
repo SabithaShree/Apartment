@@ -89,10 +89,12 @@ exports.Payment = function()
   return mongoose.model("Payment", paymentSchema);
 }
 
-exports.Expenses = function() {
-  const Schema = new Schema({
+exports.Expense = function() {
+  const Schema = mongoose.Schema;
+  const expenseSchema = new Schema({
     date: Date,
     description: String,
     amount: Number
   });
+  return mongoose.model("Expense", expenseSchema);
 }

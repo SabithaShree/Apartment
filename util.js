@@ -11,6 +11,7 @@ const Association = model.Association();
 const Forum = model.Forum();
 const Complaint = model.Complaint();
 const Payment = model.Payment();
+const Expense = model.Expense();
 
 global.constants = Object.freeze({
   "ADMIN": "admin",
@@ -44,7 +45,8 @@ exports.collection = {
   "Association": Association,
   "Forum": Forum,
   "Complaint": Complaint,
-  "Payment" : Payment
+  "Payment" : Payment,
+  "Expense" : Expense
 };
 
 exports.setSession = function(app) {

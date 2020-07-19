@@ -8,9 +8,9 @@ const https = require("https");
 const crypto = require("crypto");
 const dotenv = require("dotenv");
 const $ = require("jquery");
-const model = require(__dirname + "/model.js");
 const db = require(__dirname + "/database.js");
 const util = require(__dirname + "/util.js");
+const schedule = require(__dirname + "/schedule.js");
 
 dotenv.config();
 const app = express();
@@ -98,6 +98,46 @@ app.get("/admin/flats", util.checkLogin, function(req, res) {
         );
       }
     }
+  });
+});
+
+app.get("/admin/expenses", util.checkLogin, function(req, res) {
+
+  let date = new Date();
+  let searchMonth = date.getMonth() + 1; /// current month [0 - 11]
+  let searchYear = date.getFullYear();
+  if(req.query.month && req.query.year) {
+    req.url = req.url.split("?")[0];
+    searchMonth = req.query.month;
+    searchYear = req.query.year;
+  }
+
+  let retObj = {};
+  let aggrExp = [
+                  {$addFields: {"month" : {$month: '$date'}, "year" : {$year: "$date"}}}, // add fields explicitly adds all fields from input doc to output doc
+                  {$match: {$and: [{month: searchMonth}, {year: searchYear}]}},
+                  {$sort: {"date": -1}}
+                ];
+  db.aggregate(collection.Expense , aggrExp, function(response) {
+    retObj.expenses = response;
+    let aggr = [
+                {$addFields: {"month" : {$month: '$date'}}}, 
+                {$match: {$and: [{month: searchMonth}, {year: searchYear}]}}, 
+                {$group: {_id: null, totalExpense: {$sum: '$amount'}}}
+              ];
+    db.aggregate(collection.Expense , aggr, async function(resp) {
+      retObj.totalExpense = (resp.length > 0) ? resp[0].totalExpense : "NIL";
+      res.render(
+        await util.getRender(req, constants.ADMIN) ,
+        await util.getTemplateObject(req, retObj, constants.ADMIN)
+      );
+    });
+  });
+});
+
+app.post("/addExpense", function(req, res) {
+  db.insertRow(collection.Expense, req.body, async function(response) {
+    renderExpenses(req, res, "admin/" + constants.EXPENSES, constants.ADMIN);
   });
 });
 
@@ -525,6 +565,16 @@ function renderComplaints(req, res, render)
     res.render(
       render, 
       await util.getTemplateObject(req, {"complaints" : complaints}, constants.USER)
+    );
+  });
+}
+
+function renderExpenses(req, res, render, loginType)
+{
+  db.findAndSortRows(collection.Expense, {}, {"date": -1}, async function(expenses) {
+    res.render(
+      render, 
+      await util.getTemplateObject(req, {"expenses" : expenses}, loginType)
     );
   });
 }

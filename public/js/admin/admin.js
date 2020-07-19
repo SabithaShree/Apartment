@@ -200,3 +200,70 @@ class Maintanance
         });
     }
 }
+
+class Expense 
+{
+    registerEvents(expense) 
+    {
+        $(expense).on("click", "#expense-navbar .nav-item", function() {
+            $(this).siblings().removeClass("active");
+            $(this).addClass("active");
+            let selVal = $(this).attr("name");
+            $(expense).find(".expense-sub-div").addClass("hide");
+            $(expense).find("#" + selVal).removeClass("hide");
+        });
+
+        $(expense).on("submit", "#expense-form", function(e) {
+            e.preventDefault();
+            let formData = $(this).serialize();
+            $.ajax({
+                url : "/addExpense",
+                method : "POST",
+                data : formData,
+                beforeSend : showStatus("Adding..."),
+                success : function(res, status, xhr) {
+                    $("#right-pane").html(res);
+                    $("#right-pane").find("#expense-navbar li").removeClass("active");
+                    $("#right-pane").find("#expense-navbar li[name=expense-report-container]").addClass("active");
+                    $("#right-pane").find("#expense-form-container").addClass("hide");
+                    $("#right-pane").find("#expense-report-container").removeClass("hide");
+                    hideStatus();
+                },
+              });
+        });
+
+        $(expense).on("click", ".apt-dd .dropdown-item", function() {
+
+            var selText = $(this).text();
+            let span = "<span class='caret'></span>";
+             $(this).parents('.btn-group').find('.dropdown-toggle')
+                .html(selText + span)
+                .attr("val", selText);
+
+            let date = new Date();
+            let currentMonth = date.toLocaleString('default', { month: 'long' });
+            let currentYear = date.getFullYear();
+
+            let month = $(expense).find("#expense-report-container #month").attr("val");
+            let year = $(expense).find("#expense-report-container #year").attr("val");
+
+            $.ajax({
+                url : "/admin/expenses",
+                method : "GET",
+                data : {"month": month, "year": year},
+                beforeSend : showLoading(),
+                success : function(res, status, xhr) {
+                    $("#right-pane").html(res);
+                    $("#right-pane").find("#expense-navbar li").removeClass("active");
+                    $("#right-pane").find("#expense-navbar li[name=expense-report-container]").addClass("active");
+                    $("#right-pane").find("#expense-form-container").addClass("hide");
+                    $("#right-pane").find("#expense-report-container").removeClass("hide");
+                    $("#right-pane").find("#expense-report-container #month").html(month + span).attr("val", currentMonth);
+                    $("#right-pane").find("#expense-report-container #year").html(year + span).attr("val", currentYear);
+                    hideLoading();
+                }
+            });
+
+        });
+    }
+}

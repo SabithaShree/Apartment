@@ -1,0 +1,8 @@
+.total-expense {
+    background-image: linear-gradient(to bottom, #ff9966, #ffaa80, #ff9966);
+}
+
+.total-expense td {
+    color: white;
+    font-size: 1.15rem;
+}

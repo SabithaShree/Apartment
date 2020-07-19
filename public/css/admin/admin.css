@@ -106,7 +106,7 @@
 /* maintanance  */
 
 .maintanance-navbar .nav-item {
-    padding: 0 3%;
+    padding: 0 2rem;
     text-align: center;
     border-bottom: 1px solid #ff3333;
 }
@@ -146,4 +146,23 @@
 
 .maintanance-period-select {
     margin-bottom : 5%;
+}
+
+
+/* expenses */
+
+.container-fluid.expense-container {
+    padding-top: 1%;
+}
+
+.expense-form-container {
+    margin-top: 4%;
+}
+
+.expense-report-container {
+    padding: 5% 0;
+}
+
+.expense-report-container .table {
+    margin-top: 4%;
 }

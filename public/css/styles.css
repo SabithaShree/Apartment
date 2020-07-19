@@ -113,3 +113,38 @@ h1, h2 {
   position: relative;
   left: 56%;
 }
+
+/* table */
+
+.apt-table {
+  background-color: #ffffff;
+}
+
+.apt-table .table-head {
+  background-image: linear-gradient(to bottom, #ff9966, #ffaa80, #ff9966);
+  color: white;
+}
+
+.apt-table th {
+  color: white;
+  border-right: 1px solid white;
+}
+
+.apt-table td {
+  font-size: 1rem;
+}
+
+/* form */
+
+.payment-form {
+  background-color: #ffffff;
+  padding: 4% 10%;
+}
+
+.payment-form-heading {
+  padding-bottom: 1rem;
+  border-bottom: 0.5px solid #ffddcc;
+  color: #ff3333;
+  display: inline-block;
+  margin-bottom: 3rem;
+}
