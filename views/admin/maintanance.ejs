@@ -5,7 +5,7 @@
     });
 </script>
 <div id="maintanance-container">
-    <nav id="maintanance-navbar" class="navbar-expand-lg navbar-light maintanance-navbar">
+    <!-- <nav id="maintanance-navbar" class="navbar-expand-lg navbar-light maintanance-navbar">
         <div class="navbar">
           <ul class="navbar-nav mr-auto ml-auto">
             <li class="nav-item active">
@@ -16,20 +16,9 @@
             </li>
           </ul>
         </div>
-    </nav>
+    </nav> -->
 
     <div id="payments-container" class="payments-container container-fluid">
-        <%
-            let tableHeadings = ["flat_id", "date", "amount", "period"];
-
-            function getDateStr(date)
-            {
-                let month = date.toLocaleString('default', { month: 'long' });
-                const dateStr = month + " " + date.getDate();
-                return dateStr;
-            }
-        %>
-
         <div class="maintanance-report">
           <div class="row">
             <div class="col-6">
@@ -58,6 +47,12 @@
         <div class="maintanance-period-select apt-dd center">
             <%- include("../partials/month-year") -%>
         </div>
+        <div parent="#payments-container" target=".monthly-payment" id="payment-search" class="input-group form-group dom-search">
+          <input type="text" name="searchInput" class="form-control" placeholder="Search Paid / Yet to Pay">
+          <div class="input-group-append">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+          </div>
+        </div>
 
         <table class="table apt-table center">
           <thead class="table-head">
@@ -65,23 +60,37 @@
               <th scope="col">Flat</th>
               <th scope="col">Date</th>
               <th scope="col">Amount</th>
-              <th scope="col">Period</th>
+              <th scope="col">Status</th>
             </tr>
           </thead>
           <tbody>
+
+            <%
+            function getDateStr(date)
+            {
+                let month = date.toLocaleString('default', { month: 'long' });
+                const dateStr = month + " " + date.getDate();
+                return dateStr;
+            }
+          %>
       
             <%
-              if(payments.length > 0) {
-                payments.forEach((payment) => { %>
-                <tr>
-                <% for(var i=0; i<tableHeadings.length; i++) { %>
-                    <% if(tableHeadings[i] === "date")  {%>
-                      <td><%= getDateStr(payment[tableHeadings[i]]) %></td>
-                    <% } else if(tableHeadings[i] === "amount")  { %>
-                        <td>Rs.<%= payment[tableHeadings[i]] %></td>
-                    <% } else { %>
-                      <td><%= payment[tableHeadings[i]] %></td>
-                  <% } } %>
+              if(flats.length > 0) {
+                flats.forEach((flat) => { %>
+                <tr class="monthly-payment">
+                  <td><%= flat.flat_id %></td>
+                  <% 
+                    let payment = flat.payment; 
+                    if(payment.length > 0) { %>
+                      <td><%= getDateStr(payment[0].date) %></td>
+                      <td>Rs.<%= payment[0].amount%></td>
+                      <td><i class="fas fa-check green"></i><span class="hide">paid</span></td>
+                   <% } else { %>
+                    <td>-</td>
+                    <td>-</td>
+                    <td><i class="fas fa-hourglass-half red"></i><span class="hide">yet to pay</span></td>
+                  <% }
+                  %>
                 </tr>
               <% }); 
                 } 

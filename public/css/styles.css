@@ -134,6 +134,14 @@ h1, h2 {
   font-size: 1rem;
 }
 
+/* dd */
+
+
+.month-year-dd {
+  width: 40%;
+  margin-right: 5%;
+}
+
 /* form */
 
 .payment-form {

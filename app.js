@@ -108,8 +108,8 @@ app.get("/admin/expenses", util.checkLogin, function(req, res) {
   let searchYear = date.getFullYear();
   if(req.query.month && req.query.year) {
     req.url = req.url.split("?")[0];
-    searchMonth = req.query.month;
-    searchYear = req.query.year;
+    searchMonth = parseInt(req.query.month);
+    searchYear = parseInt(req.query.year);
   }
 
   let retObj = {};
@@ -121,7 +121,7 @@ app.get("/admin/expenses", util.checkLogin, function(req, res) {
   db.aggregate(collection.Expense , aggrExp, function(response) {
     retObj.expenses = response;
     let aggr = [
-                {$addFields: {"month" : {$month: '$date'}}}, 
+                {$addFields: {"month" : {$month: '$date'}, "year" : {$year: "$date"}}}, 
                 {$match: {$and: [{month: searchMonth}, {year: searchYear}]}}, 
                 {$group: {_id: null, totalExpense: {$sum: '$amount'}}}
               ];
@@ -137,6 +137,12 @@ app.get("/admin/expenses", util.checkLogin, function(req, res) {
 
 app.post("/addExpense", function(req, res) {
   db.insertRow(collection.Expense, req.body, async function(response) {
+    renderExpenses(req, res, "admin/" + constants.EXPENSES, constants.ADMIN);
+  });
+});
+
+app.post("/deleteExpense", function(req, res) {
+  db.deleteRow(collection.Expense, req.body, async function(response) {
     renderExpenses(req, res, "admin/" + constants.EXPENSES, constants.ADMIN);
   });
 });
@@ -179,8 +185,10 @@ app.get("/getFlats", util.checkLogin, function(req, res) {
 
 app.get("/admin/maintanance", util.checkLogin, function(req, res) {
   let searchObj = {};
+  let period = "";
   if(req.query.period) {
     searchObj.period = req.query.period;
+    period = req.query.period;
     searchObj.status = "SUCCESS";
     req.url = req.url.split("?")[0];
   }
@@ -188,7 +196,8 @@ app.get("/admin/maintanance", util.checkLogin, function(req, res) {
     let date = new Date();
     let month = date.toLocaleString('default', { month: 'long' });
     let year = date.getFullYear();
-    searchObj = {"period": month + " " + year, "status": "SUCCESS"};
+    period = month + " " + year;
+    searchObj = {"period": period, "status": "SUCCESS"};
   }
 
   let retObj = {};
@@ -196,12 +205,28 @@ app.get("/admin/maintanance", util.checkLogin, function(req, res) {
   let aggrExp = [{$match: searchObj}, {$group: group}];
   db.aggregate(collection.Payment , aggrExp, function(response) {
     retObj.totalMaintanance = (response.length > 0) ? response[0].totalMaintanance : "NIL";
-    db.findRows(collection.Payment, searchObj, async function(payments) {
-      retObj.payments = payments;
-      res.render(
-        await util.getRender(req, constants.ADMIN) ,
-        await util.getTemplateObject(req, retObj, constants.ADMIN)
-      );
+    let lookup = {
+                    from: collection.Payment.collection.name,
+                    let: {flat_id : "$flat_id"},
+                    pipeline: [
+                      {
+                          $match: {
+                              $expr: {
+                                    $and:[{$eq: ["$period", period]}, {$eq:["$flat_id","$$flat_id"]}] 
+                               }
+                          }
+                      }
+                     ],
+                    as: "payment"
+                  };
+    let aggr = [{$project: {"flat_id":1}},{$lookup: lookup}];
+    db.aggregate(collection.Flat , aggr, async function(payment) {
+      console.log(payment);
+      retObj.flats = payment;
+        res.render(
+          await util.getRender(req, constants.ADMIN) ,
+          await util.getTemplateObject(req, retObj, constants.ADMIN)
+        );
     });
   });
 });
@@ -571,11 +596,22 @@ function renderComplaints(req, res, render)
 
 function renderExpenses(req, res, render, loginType)
 {
-  db.findAndSortRows(collection.Expense, {}, {"date": -1}, async function(expenses) {
-    res.render(
-      render, 
-      await util.getTemplateObject(req, {"expenses" : expenses}, loginType)
-    );
+  let retObj = {};
+  let date = new Date();
+  db.findAndSortRows(collection.Expense, {}, {"date": -1}, async function(response) {
+    retObj.expenses = response;
+    let aggr = [
+                {$addFields: {"month" : {$month: '$date'}, "year" : {$year: "$date"}}}, 
+                {$match: {$and: [{month: date.getMonth() + 1}, {year: date.getFullYear()}]}}, 
+                {$group: {_id: null, totalExpense: {$sum: '$amount'}}}
+              ];
+    db.aggregate(collection.Expense , aggr, async function(resp) {
+      retObj.totalExpense = (resp.length > 0) ? resp[0].totalExpense : "NIL";
+      res.render(
+        render,
+        await util.getTemplateObject(req, retObj, loginType)
+      );
+    });
   });
 }
 

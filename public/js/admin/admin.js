@@ -154,8 +154,6 @@ class Association
             e.preventDefault();
             $("#left-pane").find("li[name='/admin/association']").trigger("click");
         });
-
-        
     }
 
 }
@@ -164,26 +162,18 @@ class Maintanance
 {
     registerEvents(maintanance)
     {
-        let date = new Date();
-        let currentMonth = date.toLocaleString('default', { month: 'long' });
-        let currentYear = date.getFullYear();
-        let span = "<span class='caret'></span>";
-
-        // $(maintanance).find(".maintanance-period-select #month").html(currentMonth + span).attr("val", currentMonth);
-        // $(maintanance).find(".maintanance-period-select #year").html(currentYear + span).attr("val", currentYear);
-
+        $(maintanance).find("#payment-search").searchBar();
+        
         $(maintanance).on("click", ".maintanance-period-select .dropdown-item", function() {
 
+            let span = "<span class='caret'></span>";
             var selText = $(this).text();
-             $(this).parents('.btn-group').find('.dropdown-toggle')
+             $(this).closest('.btn-group').find('.dropdown-toggle')
                 .html(selText + span)
                 .attr("val", selText);
 
             let month = $(maintanance).find(".maintanance-period-select #month").attr("val");
             let year = $(maintanance).find(".maintanance-period-select #year").attr("val");
-
-            month = (month == "Month") ? currentMonth : month;
-            year = (year == "Year") ? currentYear : year;
 
             $.ajax({
                 url : "/admin/maintanance",
@@ -192,8 +182,8 @@ class Maintanance
                 beforeSend : showLoading(),
                 success : function(res, status, xhr) {
                     $("#right-pane").html(res);
-                    $("#right-pane").find(".maintanance-period-select #month").html(month + span).attr("val", currentMonth);
-                    $("#right-pane").find(".maintanance-period-select #year").html(year + span).attr("val", currentYear);
+                    $("#right-pane").find(".maintanance-period-select #month").html(month + span).attr("val", month);
+                    $("#right-pane").find(".maintanance-period-select #year").html(year + span).attr("val", year);
                     hideLoading();
                 }
               });
@@ -223,10 +213,7 @@ class Expense
                 beforeSend : showStatus("Adding..."),
                 success : function(res, status, xhr) {
                     $("#right-pane").html(res);
-                    $("#right-pane").find("#expense-navbar li").removeClass("active");
-                    $("#right-pane").find("#expense-navbar li[name=expense-report-container]").addClass("active");
-                    $("#right-pane").find("#expense-form-container").addClass("hide");
-                    $("#right-pane").find("#expense-report-container").removeClass("hide");
+                    showReport();
                     hideStatus();
                 },
               });
@@ -234,36 +221,59 @@ class Expense
 
         $(expense).on("click", ".apt-dd .dropdown-item", function() {
 
-            var selText = $(this).text();
             let span = "<span class='caret'></span>";
-             $(this).parents('.btn-group').find('.dropdown-toggle')
-                .html(selText + span)
-                .attr("val", selText);
+             $(this).closest('.btn-group').find('.dropdown-toggle')
+                .html($(this).text() + span)
+                .attr("val", $(this).attr("val"));
 
-            let date = new Date();
-            let currentMonth = date.toLocaleString('default', { month: 'long' });
-            let currentYear = date.getFullYear();
-
-            let month = $(expense).find("#expense-report-container #month").attr("val");
-            let year = $(expense).find("#expense-report-container #year").attr("val");
+            let month = $(expense).find("#expense-report-container #month");
+            let year = $(expense).find("#expense-report-container #year");
 
             $.ajax({
                 url : "/admin/expenses",
                 method : "GET",
-                data : {"month": month, "year": year},
+                data : {"month": $(month).attr("val"), "year": $(year).attr("val")},
                 beforeSend : showLoading(),
                 success : function(res, status, xhr) {
                     $("#right-pane").html(res);
-                    $("#right-pane").find("#expense-navbar li").removeClass("active");
-                    $("#right-pane").find("#expense-navbar li[name=expense-report-container]").addClass("active");
-                    $("#right-pane").find("#expense-form-container").addClass("hide");
-                    $("#right-pane").find("#expense-report-container").removeClass("hide");
-                    $("#right-pane").find("#expense-report-container #month").html(month + span).attr("val", currentMonth);
-                    $("#right-pane").find("#expense-report-container #year").html(year + span).attr("val", currentYear);
+                    showReport();
+                    $("#right-pane").find("#expense-report-container #month").html($(month).html() + span).attr("val", $(month).attr("val"));
+                    $("#right-pane").find("#expense-report-container #year").html($(year).html() + span).attr("val", $(year).attr("val"));
                     hideLoading();
                 }
             });
 
         });
+
+        $(expense).on("click", ".delete-expense", function() {
+            let expenseId = $(this).closest(".expense-row").attr("id");
+
+            $("#alert-popup").modal("show");
+            $("#alert-popup").on("click", ".btn-delete", function() {
+      
+              $.ajax({
+                url: "/deleteExpense",
+                method: "POST",
+                data: {"_id" : expenseId},
+                beforeSend: showStatus("Deleting..."),
+                success: function(res, status, xhr) {
+                  $("#alert-popup").modal("hide");
+                  $("body").removeClass("modal-open");
+                  $(".modal-backdrop").remove();
+                  hideStatus();
+                  $("#right-pane").html(res);
+                  showReport();
+                }
+              });
+            });
+        });
+
+        function showReport()
+        {
+            $("#right-pane").find("#expense-navbar li").removeClass("active");
+            $("#right-pane").find("#expense-navbar li[name=expense-report-container]").addClass("active");
+            $("#right-pane").find("#expense-form-container").addClass("hide");
+            $("#right-pane").find("#expense-report-container").removeClass("hide");    
+        }
     }
 }

@@ -59,6 +59,7 @@
                 <th scope="col">Date</th>
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
@@ -72,7 +73,7 @@
                 }
                 if(expenses.length > 0) {
                   expenses.forEach(function(expense) { %>
-                  <tr>
+                  <tr class="expense-row" id="<%= expense._id %>">
                     <% for(var i=0; i<tableHeadings.length; i++) { %>
                       <% if(tableHeadings[i] === "date")  {%>
                         <td><%= getDateStr(expense[tableHeadings[i]]) %></td>
@@ -81,6 +82,9 @@
                       <% } else { %>
                         <td><%= expense[tableHeadings[i]] %></td>
                     <% } } %>
+                    <td class="delete-expense">
+                      <i class="fas fa-times"></i>
+                    </td>
                   </tr>
                   <% }) 
                 }
@@ -95,15 +99,17 @@
                 <tr class="total-expense">
                   <td colspan="2">
                     <% let currentMonth = (new Date()).toLocaleString('default', { month: 'long' })%>
-                    Total Expense for the month of <%= currentMonth %>
+                    Total Expense for this month
                   </td>
                   <td>
                     Rs.<%= totalExpense %>
                   </td>
+                  <td></td>
                 </tr>
             </tbody>
         </table>
     </div>
-    
-    
 </div>
+
+<%- include("../partials/alert-popup") -%>
+<%- include("../partials/loading") -%>

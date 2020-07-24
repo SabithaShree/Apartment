@@ -166,3 +166,11 @@
 .expense-report-container .table {
     margin-top: 4%;
 }
+
+.delete-expense {
+    width: 8%;
+}
+
+.delete-expense:hover {
+    cursor: pointer;
+}
