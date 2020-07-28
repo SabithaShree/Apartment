@@ -163,22 +163,24 @@ class Maintanance
     registerEvents(maintanance)
     {
         $(maintanance).find("#payment-search").searchBar();
-        
+
         $(maintanance).on("click", ".maintanance-period-select .dropdown-item", function() {
 
             let span = "<span class='caret'></span>";
             var selText = $(this).text();
              $(this).closest('.btn-group').find('.dropdown-toggle')
                 .html(selText + span)
-                .attr("val", selText);
+                .attr("text", selText)
+                .attr("val", $(this).attr("val"));
 
-            let month = $(maintanance).find(".maintanance-period-select #month").attr("val");
+            let month = $(maintanance).find(".maintanance-period-select #month").attr("text");
+            let monthNo = $(maintanance).find(".maintanance-period-select #month").attr("val");
             let year = $(maintanance).find(".maintanance-period-select #year").attr("val");
 
             $.ajax({
                 url : "/admin/maintanance",
                 method : "GET",
-                data : {"period": month + " " + year},
+                data : {"month": month, "year":year, "monthNo": monthNo},
                 beforeSend : showLoading(),
                 success : function(res, status, xhr) {
                     $("#right-pane").html(res);

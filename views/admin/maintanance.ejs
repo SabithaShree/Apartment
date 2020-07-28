@@ -24,21 +24,21 @@
             <div class="col-6">
               <div class="maintanance-stats">
                 <p class="stats-value">Rs. <%= totalMaintanance %></p>
-                <p class="stats-label">Total amount</p>
+                <p class="stats-label">Total Maintanance</p>
               </div>
               <div class="maintanance-stats">
-                <p class="stats-value">25 flats</p> 
-                <p class="stats-label">Yet to pay </p>
+                <p class="stats-value">Rs. <%= totalExpense %></p> 
+                <p class="stats-label">Total Expense</p>
               </div>
             </div>
             <div class="col-6">
               <div class="maintanance-stats">
-                <p class="stats-value"><%= totalMaintanance %></p>
-                <p class="stats-label">Total Expense </p>
+                <p class="stats-value"><%= countOfPaid %> flats</p>
+                <p class="stats-label">Paid </p>
               </div>
               <div class="maintanance-stats">
-                <p class="stats-value">25 flats</p> 
-                <p class="stats-label">Flats yet to pay </p>
+                <p class="stats-value"><%= yetToPay %> flats</p> 
+                <p class="stats-label">Yet to pay </p>
               </div> 
             </div>
           </div>
@@ -47,7 +47,7 @@
         <div class="maintanance-period-select apt-dd center">
             <%- include("../partials/month-year") -%>
         </div>
-        <div parent="#payments-container" target=".monthly-payment" id="payment-search" class="input-group form-group dom-search">
+        <div parent="#payments-container" target=".monthly-payment" id="payment-search" class="input-group form-group dom-search maintanance-search">
           <input type="text" name="searchInput" class="form-control" placeholder="Search Paid / Yet to Pay">
           <div class="input-group-append">
             <span class="input-group-text"><i class="fas fa-search"></i></span>

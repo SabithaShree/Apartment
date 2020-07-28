@@ -145,9 +145,15 @@
 }
 
 .maintanance-period-select {
-    margin-bottom : 5%;
+    /* margin-bottom : 5%; */
+    width: 60%;
+    margin: revert;
 }
 
+.maintanance-search {
+    bottom: 2.3rem;
+    left: 58%;
+}
 
 /* expenses */
 
