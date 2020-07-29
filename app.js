@@ -623,9 +623,7 @@ function getMonthlyTotalExpense(obj, searchDate, callback)
       {$group: {_id: null, totalExpense: {$sum: '$amount'}}}
     ];
 
-    console.log(JSON.stringify(aggr));
     db.aggregate(collection.Expense , aggr, async function(resp) {
-      console.log(resp);
       obj.totalExpense = (resp.length > 0) ? resp[0].totalExpense : "NIL";
       callback(obj);
     });
